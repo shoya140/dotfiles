@@ -1,0 +1,39 @@
+[user]
+    name = Shoya Ishimaru
+    email = shoya.ishimaru@gmail.com
+[color]
+    ui = auto
+[core]
+    autocrlf = false
+    excludesfile = /Users/shoya/.gitignore_global
+    editor = code --wait
+[github]
+    user = shoya140
+[filter "media"]
+    clean = git-media-clean %f
+    smudge = git-media-smudge %f
+[filter "lfs"]
+    clean = git lfs clean %f
+    smudge = git lfs smudge %f
+    required = true
+    process = git-lfs filter-process
+[merge "mergepbx"]
+    name = XCode project files merger
+    driver = /usr/local/bin/mergepbx %O %A %B
+[http]
+    sslVerify = false
+[pager]
+    log = diff-highlight | less
+    show = diff-highlight | less
+    diff = diff-highlight | less
+[init]
+    defaultBranch = main
+[pull]
+    rebase = false
+[alias]
+    l = log --date=format:'%Y-%m-%d %H:%M' --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Creset%s'
+    a = !git ls-files -m -o --exclude-standard | fzf -m --preview 'git diff --color=always {}' | xargs git add && git status --short --branch
+    b = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/heads | sed 's/refs\\/heads\\///'
+    br = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/remotes | sed 's/refs\\/remotes\\///' | grep -v 'origin/HEAD'
+    c = !git b | fzf --no-sort | awk '{ print $NF }' | xargs git checkout
+    cr = !git fetch --prune && git br | fzf --no-sort | awk '{ print $NF }' | xargs -I{} sh -c 'git checkout -t {} || echo {} | sed -e "s%[^/]*/%%" | xargs git checkout'
