@@ -2,8 +2,9 @@ if [[ `uname -m` == 'arm64' ]]; then
     export BREW_ROOT=/opt/homebrew
 else
     export BREW_ROOT=/usr/local
-    . $HOME/.asdf/asdf.sh
 fi
+
+. $HOME/.asdf/asdf.sh
 
 # alias
 alias x="/usr/local/bin/zsh"
