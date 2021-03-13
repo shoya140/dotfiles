@@ -1,6 +1,7 @@
 autoconf
 cmake
 coreutils
+fzf
 gdbm
 gettext
 git
@@ -28,6 +29,7 @@ xxhash
 xz
 zsh-completions
 zstd
+adobe-creative-cloud
 alfred
 bartender
 bettertouchtool
@@ -38,6 +40,7 @@ google-japanese-ime
 iterm2
 karabiner-elements
 mattermost
+microsoft-teams
 miro
 nextcloud
 visual-studio-code
