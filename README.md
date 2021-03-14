@@ -26,6 +26,7 @@ $ ln -s dotfiles/.zshrc
 $ ln -s dotfiles/.gitconfig
 $ ln -s dotfiles/.gitignore_global
 $ ln -s dotfiles/.vimrc
+$ ln -s dotfiles/.gvimrc
 ```
 
 Change the default shell to zsh
