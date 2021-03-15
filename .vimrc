@@ -152,3 +152,4 @@ set visualbell t_vb= "ビープ音なし
 set textwidth=0      "複数行にまたぐコードを改行しないように
 set nowrapscan       " 検索をファイルの先頭へループしない
 set colorcolumn=80
+set background=dark
