@@ -60,5 +60,5 @@ $ ln -s ~/dotfiles/karabiner.json ~/.config/karabiner/karabiner.json
 ## Maintain brew packages
 
 ```
-$ brew list > ~/dotfiles/brew.txt
+$ brew leaves list > ~/dotfiles/brew.txt
 ```
