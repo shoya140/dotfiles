@@ -1,3 +1,8 @@
+if type brew &>/dev/null
+then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 autoload -Uz compinit vcs_info add-zsh-hook
 compinit -u
 
@@ -40,6 +45,8 @@ alias cot="open $1 -a /Applications/CotEditor.app"
 
 case ${OSTYPE} in
     darwin*)
+        export PATH=$HOME/bin:$PATH
+
         # brew
         if [[ `uname -m` == 'arm64' ]]; then
             export BREW_ROOT=/opt/homebrew
@@ -60,6 +67,12 @@ case ${OSTYPE} in
 
         # heroku
         export PATH=$BREW_ROOT/heroku/bin:$PATH
+
+        # opencv
+        export PATH=$BREW_ROOT/opt/opencv@3/bin:$PATH
+        export LDFLAGS=-L$BREW_ROOT/opt/opencv@3/lib
+        export CPPFLAGS=-I$BREW_ROOT/opt/opencv@3/include
+        export PKG_CONFIG_PATH=$BREW_ROOT/opt/opencv@3/lib/pkgconfig
     ;;
 esac
 
@@ -102,3 +115,24 @@ bindkey '^R' peco-select-history
 # other scripts
 if [ -f "${HOME}/.asdf/asdf.sh" ]; then . "${HOME}/.asdf/asdf.sh"; fi
 if [ -f "${HOME}/key.zshrc" ]; then . "${HOME}/key.zshrc"; fi
+
+function conda-activate() {
+    local conda_envs=$(conda info -e | awk '{print $1}' | grep -v "#")
+    conda activate $(peco <<< ${conda_envs})
+}
+alias conda-deactivate="conda deactivate"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/etc/profile.d/conda.sh" ]; then
+        . "${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/etc/profile.d/conda.sh"
+    else
+        export PATH="${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
