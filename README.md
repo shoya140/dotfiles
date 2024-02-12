@@ -40,7 +40,7 @@ $ chsh -s /usr/local/bin/zsh
 Install brew packages
 
 ```
-$ xargs brew install < ~/dotfiles/brew.txt
+$ xargs brew install < ~/dotfiles/brew_list.txt
 ```
 
 Install dein
