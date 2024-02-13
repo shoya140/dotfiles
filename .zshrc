@@ -7,7 +7,7 @@ autoload -Uz compinit vcs_info add-zsh-hook
 compinit -u
 
 # history
-HISTFILE=~/.zsh_history
+HISTFILE=~/Dropbox/config/.zsh_history
 HISTSIZE=6000000
 SAVEHIST=6000000
 setopt hist_ignore_dups
