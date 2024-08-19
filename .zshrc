@@ -83,6 +83,9 @@ case ${OSTYPE} in
         export LDFLAGS="-L/opt/homebrew/opt/libffi/lib"
         export CPPFLAGS="-I/opt/homebrew/opt/libffi/include"
         export PKG_CONFIG_PATH="/opt/homebrew/opt/libffi/lib/pkgconfig"
+
+        # dart
+        export PATH="$PATH":"$HOME/.pub-cache/bin"
     ;;
 esac
 
@@ -132,17 +135,5 @@ function conda-activate() {
 }
 alias conda-deactivate="conda deactivate"
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/etc/profile.d/conda.sh" ]; then
-        . "${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/etc/profile.d/conda.sh"
-    else
-        export PATH="${HOME}/.asdf/installs/python/miniforge3-4.10.1-5/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+source '/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc'
+source '/opt/homebrew/share/google-cloud-sdk/path.zsh.inc'
