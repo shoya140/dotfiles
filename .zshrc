@@ -37,8 +37,6 @@ function vcs_echo {
     echo "%{$color%}(%{$branch%})%{$reset_color%}"
 }
 
-source '~/.iterm2_shell_integration.zsh'
-
 # alias
 alias ll="ls -a -l"
 alias ls="gls --color"
