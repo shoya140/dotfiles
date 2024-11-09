@@ -6,7 +6,7 @@
 [core]
     autocrlf = false
     excludesfile = /Users/shoya/.gitignore_global
-    editor = code --wait
+	editor = vim
 [github]
     user = shoya140
 [filter "media"]
