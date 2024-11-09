@@ -139,3 +139,13 @@ alias conda-deactivate="conda deactivate"
 
 source '/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc'
 source '/opt/homebrew/share/google-cloud-sdk/path.zsh.inc'
+
+export PATH="$PATH:$(go env GOPATH)/bin"
+export PATH="$PATH:$HOME/fvm/default/bin"
+export PATH="$PATH:$HOME/.pub-cache/bin"
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/shoya/.dart-cli-completion/zsh-config.zsh ]] && . /Users/shoya/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
