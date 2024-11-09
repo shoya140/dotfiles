@@ -20,7 +20,7 @@ zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' formats '%b@%r' '%c' '%u'
 setopt prompt_subst
 zstyle ':vcs_info:git:*' actionformats '%b@%r|%a' '%c' '%u'
-PROMPT='%F{yellow}[`uname -m`:%~]%f `vcs_echo`
+PROMPT='%F{yellow}[%m.`uname -m`:%~]%f `vcs_echo`
 %(?.$.%F{red}$%f) '
 
 function vcs_echo {
