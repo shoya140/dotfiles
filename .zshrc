@@ -147,3 +147,37 @@ export PATH="$PATH:$HOME/.pub-cache/bin"
 [[ -f /Users/shoya/.dart-cli-completion/zsh-config.zsh ]] && . /Users/shoya/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
+function ssh() {
+    if [ -z "$ITERM_PROFILE" ]; then
+        ORIGINAL_PROFILE="Default"
+    else
+        ORIGINAL_PROFILE="$ITERM_PROFILE"
+    fi
+    host="$1"
+    if [[ "$host" == *"monsoon"* ]]; then
+        echo -ne "\033]50;SetProfile=Monsoon\a"
+    fi
+    command ssh "$@"
+    echo -ne "\033]50;SetProfile=$ORIGINAL_PROFILE\a"
+}
+
+# venv
+function manage_venv() {
+    # 現在のディレクトリに .venv が存在する場合
+    if [ -e .venv ]; then
+        # 既に仮想環境が有効化されていない場合
+        if [ -z "$VIRTUAL_ENV" ]; then
+            source .venv/bin/activate
+            echo "Activated .venv in $(pwd)"
+        fi
+    else
+        # 仮想環境が有効化されている場合
+        if [ -n "$VIRTUAL_ENV" ]; then
+            deactivate
+            echo "Deactivated virtual environment"
+        fi
+    fi
+}
+autoload -U add-zsh-hook
+add-zsh-hook chpwd manage_venv
+manage_venv
