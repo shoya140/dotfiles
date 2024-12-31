@@ -1,0 +1,11 @@
+background-opacity = 0.9
+
+theme = ayu
+
+font-feature = -calt
+font-feature = -dlig
+
+window-width = 183
+window-height = 51
+
+resize-overlay = never
