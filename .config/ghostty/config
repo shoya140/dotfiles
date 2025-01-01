@@ -5,7 +5,7 @@ theme = ayu
 font-feature = -calt
 font-feature = -dlig
 
-window-width = 183
-window-height = 51
+window-width = 224
+window-height = 64
 
 resize-overlay = never
