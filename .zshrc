@@ -135,10 +135,10 @@ function conda-activate() {
 }
 alias conda-deactivate="conda deactivate"
 
-source '/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc'
-source '/opt/homebrew/share/google-cloud-sdk/path.zsh.inc'
+if [ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]; then . "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"; fi
+if [ -f "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc" ]; then . "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc"; fi
 
-export PATH="$PATH:$(go env GOPATH)/bin"
+if command -v go &> /dev/null; then export PATH="$PATH:$(go env GOPATH)/bin"; fi
 export PATH="$PATH:$HOME/fvm/default/bin"
 export PATH="$PATH:$HOME/.pub-cache/bin"
 
