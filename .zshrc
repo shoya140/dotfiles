@@ -7,7 +7,7 @@ autoload -Uz compinit vcs_info add-zsh-hook
 compinit -u
 
 # history
-HISTFILE=~/Dropbox/active/config/.zsh_history
+HISTFILE=~/Library/Mobile\ Documents/com~apple~CloudDocs/_data/config/.zsh_history
 HISTSIZE=6000000
 SAVEHIST=6000000
 setopt hist_ignore_dups
@@ -75,14 +75,10 @@ case ${OSTYPE} in
         export PKG_CONFIG_PATH=$BREW_ROOT/opt/opencv@3/lib/pkgconfig
 
         # ruby
-        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-        export LDFLAGS="-L/opt/homebrew/opt/readline/lib"
-        export CPPFLAGS="-I/opt/homebrew/opt/readline/include"
-        export PKG_CONFIG_PATH="/opt/homebrew/opt/readline/lib/pkgconfig"
-        export optflags="-Wno-error=implicit-function-declaration"
-        export LDFLAGS="-L/opt/homebrew/opt/libffi/lib"
-        export CPPFLAGS="-I/opt/homebrew/opt/libffi/include"
-        export PKG_CONFIG_PATH="/opt/homebrew/opt/libffi/lib/pkgconfig"
+        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
+        export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
+        export LDFLAGS="-L$(brew --prefix libffi)/lib -L$(brew --prefix openssl@3)/lib"
+        export CPPFLAGS="-I$(brew --prefix libffi)/include -I$(brew --prefix openssl@3)/include"
 
         # dart
         export PATH="$PATH":"$HOME/.pub-cache/bin"
@@ -125,9 +121,9 @@ function peco-select-history() {
 zle -N peco-select-history
 bindkey '^R' peco-select-history
 
-# other scripts
-if [ -f "${HOME}/.asdf/asdf.sh" ]; then . "${HOME}/.asdf/asdf.sh"; fi
 if [ -f "${HOME}/key.zshrc" ]; then . "${HOME}/key.zshrc"; fi
+
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 function conda-activate() {
     local conda_envs=$(conda info -e | awk '{print $1}' | grep -v "#")

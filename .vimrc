@@ -143,6 +143,9 @@ if has("autocmd")
     autocmd FileType zsh        setlocal sw=4 sts=4 ts=4 et
 endif
 
+"扱える最大ファイル容量を1GBにする
+set maxmempattern=1073741824
+
 colorscheme iceberg
 set imdisable        "IME OFF
 set antialias        "アンチエイリアス
