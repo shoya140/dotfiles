@@ -7,7 +7,7 @@ autoload -Uz compinit vcs_info add-zsh-hook
 compinit -u
 
 # history
-HISTFILE=~/Library/Mobile\ Documents/com~apple~CloudDocs/_data/config/.zsh_history
+HISTFILE=~/Dropbox/active/config/.zsh_history
 HISTSIZE=6000000
 SAVEHIST=6000000
 setopt hist_ignore_dups
@@ -123,8 +123,6 @@ bindkey '^R' peco-select-history
 
 if [ -f "${HOME}/key.zshrc" ]; then . "${HOME}/key.zshrc"; fi
 
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-
 function conda-activate() {
     local conda_envs=$(conda info -e | awk '{print $1}' | grep -v "#")
     conda activate $(peco <<< ${conda_envs})
@@ -135,7 +133,6 @@ if [ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]; then . "/op
 if [ -f "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc" ]; then . "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc"; fi
 
 if command -v go &> /dev/null; then export PATH="$PATH:$(go env GOPATH)/bin"; fi
-export PATH="$PATH:$HOME/fvm/default/bin"
 export PATH="$PATH:$HOME/.pub-cache/bin"
 
 ## [Completion]
@@ -177,3 +174,6 @@ function manage_venv() {
 autoload -U add-zsh-hook
 add-zsh-hook chpwd manage_venv
 manage_venv
+
+eval "$(mise activate zsh)"
+
