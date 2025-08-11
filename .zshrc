@@ -177,3 +177,5 @@ manage_venv
 
 eval "$(mise activate zsh)"
 
+alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
+
