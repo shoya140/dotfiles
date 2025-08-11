@@ -179,3 +179,4 @@ eval "$(mise activate zsh)"
 
 alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
 
+export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
