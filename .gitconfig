@@ -6,7 +6,7 @@
 [core]
     autocrlf = false
     excludesfile = /Users/shoya/.gitignore_global
-	editor = vim
+    editor = vim
 [github]
     user = shoya140
 [filter "media"]
@@ -37,3 +37,7 @@
     br = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/remotes | sed 's/refs\\/remotes\\///' | grep -v 'origin/HEAD'
     c = !git b | fzf --no-sort | awk '{ print $NF }' | xargs git checkout
     cr = !git fetch --prune && git br | fzf --no-sort | awk '{ print $NF }' | xargs -I{} sh -c 'git checkout -t {} || echo {} | sed -e "s%[^/]*/%%" | xargs git checkout'
+    cb = checkout -b
+    d = !git b | grep -v ' main$' | fzf -m --no-sort | awk '{ print $NF }' | xargs -r git branch -D
+    p = pull origin main
+    ls = "!git config --get-regexp alias | sed 's/alias\\.//' | awk -v cols=$(tput cols) '{cmd=$1; $1=\"\"; printf \"\\033[33m%-4s\\033[0m%s\\n\", cmd, substr($0,2,cols-5)}'"
