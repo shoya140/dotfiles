@@ -68,17 +68,9 @@ case ${OSTYPE} in
         # heroku
         export PATH=$BREW_ROOT/heroku/bin:$PATH
 
-        # opencv
-        export PATH=$BREW_ROOT/opt/opencv@3/bin:$PATH
-        export LDFLAGS=-L$BREW_ROOT/opt/opencv@3/lib
-        export CPPFLAGS=-I$BREW_ROOT/opt/opencv@3/include
-        export PKG_CONFIG_PATH=$BREW_ROOT/opt/opencv@3/lib/pkgconfig
-
-        # ruby
-        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
+        # ruby (requires $ brew install openssl@3 libyaml)
+        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3) --with-libyaml-dir=$(brew --prefix libyaml)"
         export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
-        export LDFLAGS="-L$(brew --prefix libffi)/lib -L$(brew --prefix openssl@3)/lib"
-        export CPPFLAGS="-I$(brew --prefix libffi)/include -I$(brew --prefix openssl@3)/include"
 
         # dart
         export PATH="$PATH":"$HOME/.pub-cache/bin"
