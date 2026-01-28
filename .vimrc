@@ -156,3 +156,14 @@ set textwidth=0      "複数行にまたぐコードを改行しないように
 set nowrapscan       " 検索をファイルの先頭へループしない
 set colorcolumn=80
 set background=dark
+
+
+" 通常テキストの背景を塗らない
+highlight Normal ctermbg=NONE guibg=NONE
+
+" 行番号なども背景を塗らない
+highlight LineNr ctermbg=NONE guibg=NONE
+highlight SignColumn ctermbg=NONE guibg=NONE
+highlight FoldColumn ctermbg=NONE guibg=NONE
+highlight EndOfBuffer ctermbg=NONE guibg=NONE
+highlight ColorColumn ctermbg=NONE guibg=NONE

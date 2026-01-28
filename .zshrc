@@ -170,6 +170,7 @@ manage_venv
 eval "$(mise activate zsh)"
 
 alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
+alias claude-xirg='CLAUDE_CONFIG_DIR=~/.claude-xirg claude'
 
 export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
