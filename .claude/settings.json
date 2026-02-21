@@ -3,39 +3,54 @@
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
-      "Bash(dart run:_)",
-      "Bash(find:_)",
-      "Bash(flutter:_)",
-      "Bash(git:_)",
-      "Bash(grep:_)",
-      "Bash(mkdir:_)",
-      "Bash(pod deintegrate:_)",
-      "Bash(pod install:_)",
-      "Bash(pod repo update:*)",
-      "Bash(pod repo update:_)",
-      "Bash(pod update:_)",
-      "Bash(rm:_)",
-      "Bash(rg:_)",
-      "Bash(yarn:_)",
-      "Edit(~/src/**)",
-      "Read(**)",
-      "WebFetch(domain:*)",
-      "mcp__puppeteer"
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git rev-parse *)",
+      "Bash(git symbolic-ref *)",
+      "Bash(git remote -v)",
+      "Bash(git fetch --prune *)",
+      "Bash(git pull --ff-only *)",
+
+      "Bash(npm run lint*)",
+      "Bash(npm test*)",
+      "Bash(* --version)",
+      "Bash(* --help *)"
     ],
     "deny": [
-      "Bash(curl:*)",
-      "Bash(git push:*)",
-      "Bash(sudo:*)",
-      "Bash(su:*)",
-      "Edit(~/.ssh/**)",
-      "Read(~/.ssh/id_*)"
+      "Bash(git push *)",
+      "Bash(git push)",
+      "Bash(git commit --amend*)",
+      "Bash(git reset --hard*)",
+      "Bash(git reset --mixed*)",
+      "Bash(git reset --soft*)",
+      "Bash(git clean -f*)",
+      "Bash(git clean -d*)",
+      "Bash(git rebase *)",
+      "Bash(git checkout -- *)",
+      "Bash(git restore -- *)",
+      "Bash(git config --global *)",
+      "Bash(git config -g *)",
+
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(ssh *)",
+      "Bash(scp *)",
+
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(./secrets/**)",
+      "Read(./config/credentials.*)",
+
+      "Edit(./.env*)",
+      "Write(./.env*)"
     ]
   },
-  "model": "opus",
-  "feedbackSurveyState": {
-    "lastShownTime": 1754076240708
-  },
-  "env": {
-    "DISABLE_MICROCOMPACT": true
-  }
+  "skipDangerousModePermissionPrompt": true
 }

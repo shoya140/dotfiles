@@ -169,6 +169,7 @@ manage_venv
 
 eval "$(mise activate zsh)"
 
+alias claude-fast='CLAUDE_CONFIG_DIR=~/.claude-fast claude'
 alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
 alias claude-xirg='CLAUDE_CONFIG_DIR=~/.claude-xirg claude'
 

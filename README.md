@@ -27,6 +27,8 @@ $ ln -s dotfiles/.gitconfig
 $ ln -s dotfiles/.gitignore_global
 $ ln -s dotfiles/.vimrc
 $ ln -s dotfiles/.gvimrc
+$ mkdir -p ~/.claude && ln -sfn ~/dotfiles/.claude/* ~/.claude/
+$ mkdir -p ~/.claude-fast && ln -sfn ~/dotfiles/.claude/* ~/.claude-fast/
 ```
 
 Change the default shell to zsh
