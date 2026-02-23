@@ -13,7 +13,6 @@
       "Bash(git remote -v)",
       "Bash(git fetch --prune *)",
       "Bash(git pull --ff-only *)",
-
       "Bash(npm run lint*)",
       "Bash(npm test*)",
       "Bash(* --version)",
@@ -33,24 +32,24 @@
       "Bash(git restore -- *)",
       "Bash(git config --global *)",
       "Bash(git config -g *)",
-
       "Bash(rm -rf *)",
       "Bash(sudo *)",
       "Bash(curl *)",
       "Bash(wget *)",
       "Bash(ssh *)",
       "Bash(scp *)",
-
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Read(./secrets/**)",
       "Read(./config/credentials.*)",
-
       "Edit(./.env*)",
       "Write(./.env*)"
     ]
   },
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
+  }
 }
