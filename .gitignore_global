@@ -4,5 +4,6 @@
 ._.DS_Store
 .vscode
 __pycache__
+**/.claude/worktrees
 **/.claude/settings.local.json
 *.local.md
