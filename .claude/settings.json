@@ -48,12 +48,6 @@
       "Write(./.env*)"
     ]
   },
-  "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": true
-  },
-  "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "high",
   "hooks": {
     "WorktreeCreate": [
       {
@@ -75,5 +69,12 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true
+  },
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
+  "model": "opus[1m]"
 }

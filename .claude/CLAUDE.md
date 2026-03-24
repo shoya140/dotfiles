@@ -7,9 +7,8 @@
 
 ## 作業フロー
 
-- 作業を始める前に、プロジェクトディレクトリにある PLAN.md, PLAN.local.md, MANUAL.md, MANUAL.local.md, LOG.md, LOG.local.md に内容を確認してください。
+- 作業を始める前に、プロジェクトディレクトリにある PLAN.md, PLAN.local.md, LOG.md, LOG.local.md に内容を確認してください。
 - 作業内容は @PLAN.md (ファイルが存在しない場合は@PLAN.local.md) に記載してください。
 - 作業を行うたびに、作業内容 @LOG.md (ファイルが存在しない場合は@LOG.local.md) に記載してください。
 - 作業を変更した場合は、 @PLAN.md (ファイルが存在しない場合は@PLAN.local.md) 内容も更新してください。差分は @LOG.md (ファイルが存在しない場合は@LOG.local.md) に記載してください。
-- 最終的な構築順は、人間が再現できるように @MANUAL.md (ファイルが存在しない場合は@MANUAL.local.md) にまとめてください。
 - 人間側が必要な作業 (ブラウザでの設定など) が発生した場合は、手を止め、ユーザーに作業を依頼してください。
