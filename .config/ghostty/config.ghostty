@@ -51,7 +51,7 @@
 resize-overlay = never
 
 theme = Ayu
-background-opacity = 0.9
+background-opacity = 0.90
 background-blur = true
 split-divider-color = #898886
 
@@ -63,3 +63,4 @@ font-family = "Hack Nerd Font Mono"
 font-family = "Hiragino Kaku Gothic ProN"
 
 macos-option-as-alt = true
+initial-command = /opt/homebrew/bin/herdr
