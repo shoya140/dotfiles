@@ -42,6 +42,7 @@ alias ll="ls -a -l"
 alias ls="gls --color"
 alias x="/usr/local/bin/zsh"
 alias cot="open $1 -a /Applications/CotEditor.app"
+alias hr="herdr"
 
 case ${OSTYPE} in
     darwin*)
@@ -169,9 +170,15 @@ manage_venv
 
 eval "$(mise activate zsh)"
 
-alias claude-fast='CLAUDE_CONFIG_DIR=~/.claude-fast claude'
 alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
 alias claude-xirg='CLAUDE_CONFIG_DIR=~/.claude-xirg claude'
+alias claude-api='CLAUDE_CONFIG_DIR=~/.claude-api claude'
 
 export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/shoya/.lmstudio/bin"
+# End of LM Studio CLI section
+
+export PATH="$HOME/.local/bin:$PATH"
