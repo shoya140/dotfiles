@@ -6,4 +6,5 @@
 __pycache__
 **/.claude/worktrees
 **/.claude/settings.local.json
+.codex-tmp
 *.local.md
