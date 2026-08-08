@@ -27,8 +27,19 @@ $ ln -s dotfiles/.gitconfig
 $ ln -s dotfiles/.gitignore_global
 $ ln -s dotfiles/.vimrc
 $ ln -s dotfiles/.gvimrc
-$ mkdir -p ~/.claude && ln -sfn ~/dotfiles/.claude/* ~/.claude/
-$ mkdir -p ~/.claude-fast && ln -sfn ~/dotfiles/.claude/* ~/.claude-fast/
+# Claude Code
+$ mkdir -p ~/.claude/skills
+$ ln -sfn ~/dotfiles/agent-config/claude__settings.json ~/.claude/settings.json
+$ ln -sfn ~/dotfiles/agent-config/claude__CLAUDE.md ~/.claude/CLAUDE.md
+$ ln -sfn ~/dotfiles/agent-config/skills/* ~/.claude/skills/
+$ mkdir -p ~/.claude-api/skills
+$ ln -sfn ~/dotfiles/agent-config/claude__settings.json ~/.claude-api/settings.json
+$ ln -sfn ~/dotfiles/agent-config/claude__CLAUDE.md ~/.claude-api/CLAUDE.md
+$ ln -sfn ~/dotfiles/agent-config/skills/* ~/.claude-api/skills/
+# Codex
+$ mkdir -p ~/.codex/skills
+$ ln -sfn ~/dotfiles/agent-config/codex__AGENTS.md ~/.codex/AGENTS.md
+$ ln -sfn ~/dotfiles/agent-config/skills/* ~/.codex/skills/
 ```
 
 Change the default shell to zsh

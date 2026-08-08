@@ -1,5 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
@@ -13,6 +16,8 @@
       "Bash(git remote -v)",
       "Bash(git fetch --prune *)",
       "Bash(git pull --ff-only *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
       "Bash(npm run lint*)",
       "Bash(npm test*)",
       "Bash(* --version)",
@@ -44,27 +49,19 @@
       "Read(**/.env.*)",
       "Read(./secrets/**)",
       "Read(./config/credentials.*)",
-      "Edit(./.env*)",
-      "Write(./.env*)"
+      "Edit(./.env*)"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
-    "WorktreeCreate": [
+    "SessionStart": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/worktree-create.sh"
-          }
-        ]
-      }
-    ],
-    "WorktreeRemove": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/worktree-remove.sh"
+            "command": "bash '/Users/shoya/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
           }
         ]
       }
@@ -72,9 +69,37 @@
   },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "crit@crit": true,
+    "cosense-cli@cosense-cli": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "crit": {
+      "source": {
+        "source": "github",
+        "repo": "tomasz-tomczyk/crit"
+      }
+    },
+    "cosense-cli": {
+      "source": {
+        "source": "github",
+        "repo": "helpfeel/cosense-cli"
+      }
+    }
   },
   "effortLevel": "high",
+  "askUserQuestionTimeout": "never",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "model": "opus[1m]"
+  "skipWorkflowUsageWarning": true,
+  "fileCheckpointingEnabled": true,
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true
 }
