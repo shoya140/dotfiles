@@ -67,7 +67,21 @@ $ rm installer.sh
 karabiner-elements
 
 ```
-$ ln -s ~/dotfiles/karabiner.json ~/.config/karabiner/karabiner.json
+$ mkdir -p ~/.config/karabiner
+$ ln -s ~/dotfiles/.config/karabiner/karabiner.json ~/.config/karabiner/karabiner.json
+```
+
+ghostty
+
+```
+$ ln -s ~/dotfiles/.config/ghostty ~/.config/ghostty
+```
+
+herdr
+
+```
+$ mkdir -p ~/.config/herdr
+$ ln -sf ~/dotfiles/.config/herdr/config.toml ~/.config/herdr/config.toml
 ```
 
 ## Maintain brew packages
