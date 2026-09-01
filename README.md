@@ -59,9 +59,7 @@ $ xargs brew install < ~/dotfiles/brew_list.txt
 Install dein
 
 ```
-$ curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
-$ sh ./installer.sh ~/.cache/dein
-$ rm installer.sh
+$ sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
 ```
 
 karabiner-elements
