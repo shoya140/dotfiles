@@ -63,4 +63,3 @@ font-family = "Hack Nerd Font Mono"
 font-family = "Hiragino Kaku Gothic ProN"
 
 macos-option-as-alt = true
-initial-command = /opt/homebrew/bin/herdr

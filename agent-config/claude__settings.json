@@ -94,7 +94,7 @@
       }
     }
   },
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,

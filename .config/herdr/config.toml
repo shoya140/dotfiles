@@ -10,11 +10,11 @@ hide_tab_bar_when_single_tab = true
 
 [keys]
 prefix = "ctrl+a"
-detach = ["prefix+d"]
-split_horizontal = ["prefix+minus", "alt+shift+d"]
+detach = ["prefix+d", "alt+q"]
+close_pane = ["prefix+w", "alt+w"]
 split_vertical = ["prefix+=", "alt+d"]
+split_horizontal = ["prefix+minus", "alt+shift+d"]
 new_tab = ["prefix+t", "alt+t"]
 new_workspace = ["prefix+n", "alt+n"]
-close_pane = ["prefix+w", "alt+w"]
-switch_workspace = "alt+1..9"
+switch_tab = ["prefix+1..9","alt+1..9"]
 toggle_sidebar = ["prefix+\\", "alt+\\"]
