@@ -40,6 +40,11 @@ $ ln -sfn ~/dotfiles/agent-config/skills/* ~/.claude-api/skills/
 $ mkdir -p ~/.codex/skills
 $ ln -sfn ~/dotfiles/agent-config/codex__AGENTS.md ~/.codex/AGENTS.md
 $ ln -sfn ~/dotfiles/agent-config/skills/* ~/.codex/skills/
+# ghostty
+$ ln -s ~/dotfiles/.config/ghostty ~/.config/ghostty
+# herdr
+$ mkdir -p ~/.config/herdr
+$ ln -sf ~/dotfiles/.config/herdr/config.toml ~/.config/herdr/config.toml
 ```
 
 Change the default shell to zsh
@@ -67,19 +72,6 @@ karabiner-elements
 ```
 $ mkdir -p ~/.config/karabiner
 $ ln -s ~/dotfiles/.config/karabiner/karabiner.json ~/.config/karabiner/karabiner.json
-```
-
-ghostty
-
-```
-$ ln -s ~/dotfiles/.config/ghostty ~/.config/ghostty
-```
-
-herdr
-
-```
-$ mkdir -p ~/.config/herdr
-$ ln -sf ~/dotfiles/.config/herdr/config.toml ~/.config/herdr/config.toml
 ```
 
 ## Maintain brew packages

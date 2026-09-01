@@ -1,0 +1,9 @@
+coreutils
+ffmpeg
+herdr
+imagemagick
+macmon
+mas
+mise
+postgresql@18
+tree
