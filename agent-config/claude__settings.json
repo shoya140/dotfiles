@@ -101,5 +101,10 @@
   "skipWorkflowUsageWarning": true,
   "fileCheckpointingEnabled": true,
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "modelSettings": {
+    "claude-fable-5": {
+      "effortLevel": "xhigh"
+    }
+  }
 }

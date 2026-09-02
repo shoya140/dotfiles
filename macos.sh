@@ -21,6 +21,34 @@ defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 
+# 入力ソース切替時の言語インジケータ (画面中央のポップアップ) を表示しない
+defaults write NSGlobalDomain TSMLanguageIndicatorEnabled -bool false
+
+# ------------------------------------------------------------
+# キーボードショートカット
+# ------------------------------------------------------------
+
+# システムのキーボードショートカットをIDで指定して無効にする
+# 引数: ID、キーのASCIIコード、キーコード、修飾キーのビットマスク
+disable_shortcut() {
+  defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add "$1" "
+    <dict>
+      <key>enabled</key><false/>
+      <key>value</key>
+      <dict>
+        <key>type</key><string>standard</string>
+        <key>parameters</key>
+        <array><integer>$2</integer><integer>$3</integer><integer>$4</integer></array>
+      </dict>
+    </dict>"
+}
+
+disable_shortcut 32 65535 126 8650752 # Mission Control (^↑)
+disable_shortcut 33 65535 125 8650752 # アプリケーションウインドウ (^↓)
+disable_shortcut 79 65535 123 8650752 # 左の操作スペースに移動 (^←)
+disable_shortcut 81 65535 124 8650752 # 右の操作スペースに移動 (^→)
+disable_shortcut 65 32 49 1572864     # Finderの検索ウインドウを表示 (⌥⌘Space)
+
 # ------------------------------------------------------------
 # 外観
 # ------------------------------------------------------------
@@ -46,6 +74,16 @@ defaults write com.apple.dock show-recents -bool false
 # ホットコーナー: 右下でディスプレイをスリープさせる (修飾キーなし)
 defaults write com.apple.dock wvous-br-corner -int 10
 defaults write com.apple.dock wvous-br-modifier -int 0
+
+# ------------------------------------------------------------
+# デスクトップとウインドウ
+# ------------------------------------------------------------
+
+# 壁紙クリックでのデスクトップ表示を「ステージマネージャ使用時のみ」にする
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+
+# タイル表示されたウインドウの間隔を空けない
+defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
 
 # ------------------------------------------------------------
 # Finder
@@ -96,10 +134,19 @@ defaults write com.apple.screencapture show-thumbnail -bool false
 defaults write com.apple.menuextra.clock ShowDayOfWeek -bool true
 defaults write com.apple.menuextra.clock ShowDate -bool false
 
+# Bluetoothを常に表示する
+defaults -currentHost write com.apple.controlcenter Bluetooth -int 18
+
 # ------------------------------------------------------------
 # 反映
 # ------------------------------------------------------------
 
-killall Dock Finder SystemUIServer
+killall Dock Finder SystemUIServer ControlCenter 2>/dev/null || true
+
+# キーボードショートカットの変更を即時反映する
+activate_settings="/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings"
+if [ -x "$activate_settings" ]; then
+  "$activate_settings" -u
+fi
 
 echo "Done. Some settings require logout or restart to take effect."

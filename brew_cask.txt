@@ -8,7 +8,6 @@ atok
 betterdisplay
 chatgpt
 claude
-claude-bar
 cyberduck
 deepl
 discord
