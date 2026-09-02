@@ -52,7 +52,7 @@
       "Edit(./.env*)"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "claude-fable-5-1[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -95,16 +95,19 @@
     }
   },
   "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-fable-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "xhigh"
+    }
+  },
   "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "fileCheckpointingEnabled": true,
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true,
-  "modelSettings": {
-    "claude-fable-5": {
-      "effortLevel": "xhigh"
-    }
-  }
+  "agentPushNotifEnabled": true
 }
