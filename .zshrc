@@ -130,7 +130,7 @@ export PATH="$PATH:$HOME/.pub-cache/bin"
 
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/shoya/.dart-cli-completion/zsh-config.zsh ]] && . /Users/shoya/.dart-cli-completion/zsh-config.zsh || true
+[[ -f $HOME/.dart-cli-completion/zsh-config.zsh ]] && . $HOME/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
 function ssh() {
@@ -149,15 +149,14 @@ function ssh() {
 
 # venv
 function manage_venv() {
-    # 現在のディレクトリに .venv が存在する場合
+    # Activate .venv when entering a directory that has one,
+    # deactivate when leaving it
     if [ -e .venv ]; then
-        # 既に仮想環境が有効化されていない場合
         if [ -z "$VIRTUAL_ENV" ]; then
             source .venv/bin/activate
             echo "Activated .venv in $(pwd)"
         fi
     else
-        # 仮想環境が有効化されている場合
         if [ -n "$VIRTUAL_ENV" ]; then
             deactivate
             echo "Deactivated virtual environment"
@@ -175,10 +174,10 @@ alias claude-xirg='CLAUDE_CONFIG_DIR=~/.claude-xirg claude'
 alias claude-api='CLAUDE_CONFIG_DIR=~/.claude-api claude'
 
 export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
-export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+export PATH="$BREW_ROOT/opt/postgresql@18/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/shoya/.lmstudio/bin"
+export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
 export PATH="$HOME/.local/bin:$PATH"

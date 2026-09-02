@@ -1,0 +1,132 @@
+#!/bin/bash
+# CLI to apply, check and sync the dotfiles. Runs on the bash 3.2 that ships with macOS.
+set -euo pipefail
+
+DOTFILES_DIR=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
+export DOTFILES_DIR
+
+for f in common link packages macos; do
+  # shellcheck source=/dev/null
+  . "$DOTFILES_DIR/lib/$f.sh"
+done
+
+usage() {
+  cat <<USAGE
+usage: dotfiles <command>
+
+  install     set up a new Mac: runs the commands below in order (safe to re-run)
+  packages    install the taps, formulae, casks and App Store apps in packages/*.txt
+  link        create the symlinks in links.conf (existing files are backed up)
+  tools       install dein.vim and the herdr integration for Claude Code
+  macos       write macos/defaults.conf and hotkeys.conf to this machine
+
+  check       report drift between the repo and this machine (run by hand, e.g. weekly)
+  sync        update packages/*.txt and macos/defaults.conf from this machine's state
+  snapshot    accept the current defaults as the new snapshot baseline
+USAGE
+}
+
+ensure_xcode_clt() {
+  if xcode-select -p >/dev/null 2>&1; then
+    ok "Xcode Command Line Tools"
+    return
+  fi
+  xcode-select --install
+  die "Finish installing the Command Line Tools, then run 'bin/dotfiles install' again"
+}
+
+ensure_homebrew() {
+  if ! command -v brew >/dev/null 2>&1 && [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+  if command -v brew >/dev/null 2>&1; then
+    ok "$(brew --version | head -1)"
+    return
+  fi
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+}
+
+tools_install() {
+  section "Tools"
+  local dein="$HOME/.cache/dein/repos/github.com/Shougo/dein.vim"
+  if [ -d "$dein" ]; then
+    ok "dein.vim"
+  else
+    git clone https://github.com/Shougo/dein.vim "$dein"
+    ok "dein.vim cloned to $dein"
+  fi
+  if command -v herdr >/dev/null 2>&1; then
+    if [ -f "$HOME/.claude/hooks/herdr-agent-state.sh" ]; then
+      ok "herdr claude integration"
+    else
+      herdr integration install claude
+    fi
+  fi
+}
+
+git_check() {
+  section "Repository"
+  local dirty behind=0 ahead=0
+  dirty=$(git -C "$DOTFILES_DIR" status --porcelain | wc -l | tr -d ' ')
+  if GIT_SSH_COMMAND="ssh -o BatchMode=yes -o ConnectTimeout=5" \
+     git -C "$DOTFILES_DIR" fetch --quiet 2>/dev/null; then
+    read -r behind ahead <<< "$(git -C "$DOTFILES_DIR" rev-list --left-right --count '@{upstream}...HEAD' 2>/dev/null || echo '0 0')"
+  else
+    warn "git fetch failed (offline?), skipped remote comparison"
+  fi
+  [ "$dirty" = 0 ]  || drift "$dirty uncommitted file(s) in $DOTFILES_DIR"
+  [ "$behind" = 0 ] || drift "$behind commit(s) behind origin (run: git -C ~/dotfiles pull)"
+  [ "$ahead" = 0 ]  || drift "$ahead commit(s) not pushed"
+  [ "$dirty$behind$ahead" != 000 ] || ok "clean and in sync with origin"
+}
+
+check_body() {
+  printf 'dotfiles check  %s  %s\n' "$(date '+%Y-%m-%d %H:%M')" "$(hostname -s)"
+  git_check
+  link_check
+  packages_check
+  macos_check
+  section "Summary"
+  if [ "$DRIFT_COUNT" -eq 0 ]; then
+    ok "no drift"
+  else
+    printf '%s ✗ %s drift(s) found:%s\n' "$C_RED" "$DRIFT_COUNT" "$C_RESET"
+    printf '%s' "$DRIFT_SUMMARY" | sed 's/^/     /'
+    info "Run 'dotfiles sync' to adopt this machine's state, or the command shown above to apply the declaration (Claude Code: /dotfiles)"
+  fi
+  [ "$DRIFT_COUNT" -eq 0 ]
+}
+
+cmd_install() {
+  require_macos
+  section "Prerequisites"
+  ensure_xcode_clt
+  ensure_homebrew
+  packages_install
+  link_apply
+  tools_install
+  macos_apply
+  printf '\nDone. Open a new shell to load the updated config.\n'
+}
+
+cmd_sync() {
+  packages_sync
+  macos_sync
+  section "Result"
+  git -C "$DOTFILES_DIR" status --short
+  info "Review with 'git diff', then commit"
+}
+
+case "${1:-help}" in
+  install)   cmd_install ;;
+  packages)  packages_install ;;
+  link)      link_apply ;;
+  tools)     tools_install ;;
+  macos)     macos_apply ;;
+  check)     check_body ;;
+  sync)      cmd_sync ;;
+  snapshot)  snapshot_update ;;
+  help|-h|--help) usage ;;
+  *) usage >&2; exit 1 ;;
+esac

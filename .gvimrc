@@ -2,14 +2,14 @@ source ~/.vimrc
 
 if has('gui_macvim')
 
-    set transparency=5  " 透明度
-    set guioptions-=T    " ツールバー非表示
-    set tabstop=4        " タブサイズ
-    set columns=200      " 横幅
-    set lines=80         " 行数
-    set nowrapscan       " 検索をファイルの先頭へループしない
+    set transparency=5  " Transparency
+    set guioptions-=T    " Hide toolbar
+    set tabstop=4        " Tab size
+    set columns=200      " Window width
+    set lines=80         " Window height
+    set nowrapscan       " Do not wrap search around the end of the file
 
-    " フォント設定
+    " Fonts
     set guifontwide=Monaco:h12
     set guifont=Monaco:h12
 

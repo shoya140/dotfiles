@@ -1,9 +1,11 @@
 coreutils
 ffmpeg
+git
 herdr
 imagemagick
 macmon
 mas
 mise
+peco
 postgresql@18
 tree
