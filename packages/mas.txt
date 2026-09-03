@@ -1,11 +1,12 @@
-1024640650  CotEditor
-1153157709  Speedtest
-1440147259  AdGuard Mini
 1569813296  1Password for Safari
-1607635845  Velja
+1440147259  AdGuard Mini
+937984704  Amphetamine
+1024640650  CotEditor
 361285480  Keynote
+539883307  LINE
+714196447  MenuBar Stats
 361304891  Numbers
 361309726  Pages
-714196447  MenuBar Stats
+1153157709  Speedtest
+1607635845  Velja
 775737590  iA Writer
-937984704  Amphetamine
