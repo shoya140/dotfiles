@@ -17,7 +17,7 @@ usage: dotfiles <command>
   install     set up a new Mac: runs the commands below in order (safe to re-run)
   packages    install the taps, formulae, casks and App Store apps in packages/*.txt
   link        create the symlinks in links.conf (existing files are backed up)
-  tools       install dein.vim and the herdr integration for Claude Code
+  tools       install dein.vim, the herdr integration for Claude Code and herdr plugins
   macos       write macos/defaults.conf and hotkeys.conf to this machine
 
   check       report drift between the repo and this machine (run by hand, e.g. weekly)
@@ -61,6 +61,11 @@ tools_install() {
       ok "herdr claude integration"
     else
       herdr integration install claude
+    fi
+    if herdr plugin list 2>/dev/null | grep "shibayu36.equalize-panes" >/dev/null; then
+      ok "herdr plugin equalize-panes"
+    else
+      herdr plugin install shibayu36/herdr-equalize-panes -y
     fi
   fi
 }
