@@ -181,3 +181,11 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# opencode: built-in websearch (Exa) を有効化 (Apple fm 連携用)
+export OPENCODE_ENABLE_EXA=1
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/shoya/.docker/completions $fpath)
+autoload -Uz compinit
+(( ${+_comps[docker]} )) || compinit
+# End of Docker CLI completions

@@ -12,3 +12,4 @@ peco_search_history() {
 }
 bind -x '"\C-r": peco_search_history'
 
+export PATH="$HOME/.local/bin:$PATH"
