@@ -8,13 +8,13 @@ atok
 betterdisplay
 chatgpt
 claude
-claude-bar
 cyberduck
 deepl
 discord
 docker-desktop
 drawio
 dropbox
+gcloud-cli
 ghostty
 google-chrome
 google-chrome@beta
@@ -30,6 +30,7 @@ mattermost
 microsoft-office
 microsoft-teams
 obsidian
+openusage
 parallels
 slack
 tableplus
