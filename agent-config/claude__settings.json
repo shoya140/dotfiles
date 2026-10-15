@@ -39,7 +39,6 @@
       "Bash(git config -g *)",
       "Bash(rm -rf *)",
       "Bash(sudo *)",
-      "Bash(curl *)",
       "Bash(wget *)",
       "Bash(ssh *)",
       "Bash(scp *)",
@@ -52,7 +51,6 @@
       "Edit(./.env*)"
     ]
   },
-  "model": "claude-fable-5-1[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -101,12 +99,19 @@
     },
     "claude-fable-5-1": {
       "effortLevel": "xhigh"
+    },
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
     }
   },
   "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
+  "switchModelsOnFlag": false,
   "fileCheckpointingEnabled": true,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true
