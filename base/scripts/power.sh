@@ -1,15 +1,16 @@
 #!/bin/bash
-# Keep the Mac reachable on AC power: never sleep, wake for network access, and restart after a power
-# failure where the hardware supports it. pmset needs sudo, so it runs only for the values that differ.
+# Set AC power options given as key=value pairs, such as sleep=0, skipping those this Mac does not support.
+# pmset needs sudo, so it runs only for the values that differ.
 set -euo pipefail
 
-WANT="sleep=0 womp=1 autorestart=1"
+[ $# -gt 0 ] || { echo "usage: $0 key=value..." >&2; exit 1; }
 
-capabilities=$(pmset -g cap | awk '/^Capabilities for AC Power:/ { ac = 1; next } /^[^ ]/ { ac = 0 } ac { print $1 }')
+# Capabilities under any power source heading, so that a laptop running on battery still sets its AC values
+capabilities=$(pmset -g cap | awk '/^[ \t]/ { print $1 }')
 current=$(pmset -g custom | awk '/^AC Power:/ { ac = 1; next } /^[^ ]/ { ac = 0 } ac { print $1, $2 }')
 
 args=""
-for pair in $WANT; do
+for pair in "$@"; do
   key=${pair%%=*}
   value=${pair#*=}
   printf '%s\n' "$capabilities" | grep -qx "$key" || continue

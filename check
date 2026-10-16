@@ -1,6 +1,6 @@
 #!/bin/bash
 # Report what mise has no command for: App Store apps nobody declared, System Settings changed since the
-# last snapshot, Remote Login, Screen Sharing and FileVault, and entries in this Mac's own mise config.
+# last snapshot, and entries in this Mac's own mise config.
 # `check --accept` takes the current preferences as the new snapshot. Runs on the bash 3.2 that ships with macOS.
 set -euo pipefail
 
@@ -43,14 +43,6 @@ linked_roles() {
     [ -L "$link" ] || continue
     case "$(readlink "$link")" in */roles/*) basename "$link" ;; esac
   done
-}
-
-role_includes() { # part
-  local role
-  for role in $(linked_roles); do
-    grep -q "parts/$1.toml" "$MISE_CONFIG_DIR/conf.d/$role/mise.toml" 2>/dev/null && return 0
-  done
-  return 1
 }
 
 declared_domains() {
@@ -135,27 +127,6 @@ snapshot_accept() {
   ok "took the current preferences as the snapshot in $SNAPSHOT_DIR"
 }
 
-check_manual() {
-  section "Manual settings"
-  if fdesetup status 2>/dev/null | grep -q "FileVault is Off"; then
-    ok "FileVault is off"
-  elif role_includes always-on; then
-    drift "FileVault is on, so the Mac cannot be reached after a restart (System Settings > Privacy & Security)"
-  else
-    info "FileVault is on"
-  fi
-  if nc -z -G 2 127.0.0.1 22 >/dev/null 2>&1; then
-    ok "Remote Login is on"
-  else
-    drift "Remote Login is off (System Settings > General > Sharing)"
-  fi
-  if nc -z -G 2 127.0.0.1 5900 >/dev/null 2>&1; then
-    ok "Screen Sharing is on"
-  else
-    drift "Screen Sharing is off (System Settings > General > Sharing)"
-  fi
-}
-
 check_local_config() {
   section "This Mac's own mise config"
   local entries=""
@@ -176,7 +147,6 @@ cmd_check() {
   [ -n "$roles" ] || drift "no role is linked in $MISE_CONFIG_DIR/conf.d (run: $REPO_DIR/setup <role>)"
   check_mas
   check_snapshot
-  check_manual
   check_local_config
   section "Summary"
   if [ "$DRIFT_COUNT" -eq 0 ]; then

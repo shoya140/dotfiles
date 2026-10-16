@@ -33,9 +33,13 @@ min_version = "2026.10.11"
 "~/.codex/skills/*" = { source = "agent-config/skills/*" }
 
 # Dock, Finder and the menu bar read many preferences only at launch, so restart them when a value changed.
+# Every Mac stays awake while on AC power; parts/always-on.toml adds the rest of the power settings.
 [bootstrap.hooks]
 pre-defaults = "{{ config_root }}/scripts/defaults-hook.sh pre"
-post-defaults = "{{ config_root }}/scripts/defaults-hook.sh post"
+post-defaults = [
+  "{{ config_root }}/scripts/defaults-hook.sh post",
+  "{{ config_root }}/scripts/power.sh sleep=0",
+]
 
 # ------------------------------------------------------------
 # macOS defaults. mise compares types too: an integer 1 does not satisfy true.

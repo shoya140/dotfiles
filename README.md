@@ -21,13 +21,13 @@ Machine names, hardware and which Mac has which role are not recorded here. A Ma
 
 | Path | Declares |
 | --- | --- |
-| `base/mise.toml` | what every Mac gets: CLI packages, macOS defaults, every dotfile, dein.vim |
+| `base/mise.toml` | what every Mac gets: CLI packages, macOS defaults, staying awake on AC power, every dotfile, dein.vim |
 | `base/home/`, `base/agent-config/` | the dotfiles themselves, linked into `$HOME` |
-| `parts/*.toml` | pieces the roles include: `gui` (GUI and App Store apps, trackpad), `always-on` (power settings), `dev` (tools and CLI) |
+| `parts/*.toml` | pieces the roles include: `gui` (GUI and App Store apps, trackpad), `always-on` (wake for network access, restart after a power failure), `dev` (tools and CLI) |
 | `roles/<role>/mise.toml` | a role: the parts it includes plus its own packages and tools |
 | `setup` | sets up a Mac for a role |
 | `check` | the part of the weekly check that mise has no command for |
-| `base/scripts/`, `parts/scripts/` | hooks that `mise bootstrap` runs, and helpers for `check` |
+| `base/scripts/` | hooks that `mise bootstrap` runs (restarting Dock and Finder, power settings), and helpers for `check` |
 
 `setup` links `base` and the role into `~/.config/mise/conf.d`, where mise reads them as global config.
 Dotfiles are linked through those two links (`~/.zshrc -> ~/.config/mise/conf.d/base/home/.zshrc`), so a
@@ -38,7 +38,8 @@ moved repository only needs the two links updated.
 1. By hand in System Settings:
    - General > About: set the computer name
    - General > Sharing: turn on Screen Sharing and Remote Login
-   - Privacy & Security: turn off FileVault, so the Mac is reachable over Tailscale after power-on
+   - Privacy & Security: turn FileVault on or off. dotfiles leaves it alone. A Mac with FileVault on waits for
+     the password at its own screen after a restart, so a Mac reached over Tailscale keeps it off
    - App Store: sign in when the role has App Store apps (workstation and mobile: the personal Apple Account,
      agent: the agent's Apple Account, shared-llm: none)
 2. In a terminal:
@@ -94,8 +95,7 @@ ones installed with Homebrew itself. Casks installed with Homebrew show up as `s
 1. App Store apps installed but not declared
 2. the tracked `defaults` domains changed since the last snapshot, which is how a setting changed in System
    Settings shows up before it is declared (`check --accept` takes the current preferences as the snapshot)
-3. Remote Login and Screen Sharing are on, and FileVault is off on the always-on roles
-4. entries in the Mac's own `~/.config/mise/config.toml`
+3. entries in the Mac's own `~/.config/mise/config.toml`
 
 Typical flows:
 
@@ -122,6 +122,9 @@ $ ~/dotfiles/check --accept         # take the new preferences as the snapshot
   receipts, so `brew` manages them too, but casks installed by mise are upgraded by mise
   (`mise bootstrap --upgrade`). Homebrew stays installed for trying things and for the rare cask mise cannot
   install, and `brew upgrade` updates what it installed.
+- Power settings go through `sudo pmset -c` (AC power only) in `base/scripts/power.sh`, and only for the values
+  that differ. Every Mac stays awake on AC power; the always-on roles also wake for network access and restart
+  after a power failure where the Mac supports it.
 - macOS defaults are compared with their type, so an integer 1 does not satisfy `true`. The hooks in
   `base/scripts/defaults-hook.sh` restart Dock, Finder and the menu bar only when a run changed their
   preferences. Some settings need a logout or restart.
