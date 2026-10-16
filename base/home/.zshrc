@@ -171,6 +171,9 @@ autoload -U add-zsh-hook
 add-zsh-hook chpwd manage_venv
 manage_venv
 
+export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
+export PATH="$BREW_ROOT/opt/postgresql@18/bin:$PATH"
+
 # mise from mise.run lives here and must win over any Homebrew copy before activation
 export PATH="$HOME/.local/bin:$PATH"
 eval "$(mise activate zsh)"
@@ -178,9 +181,6 @@ eval "$(mise activate zsh)"
 alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
 alias claude-xirg='CLAUDE_CONFIG_DIR=~/.claude-xirg claude'
 alias claude-api='CLAUDE_CONFIG_DIR=~/.claude-api claude'
-
-export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
-export PATH="$BREW_ROOT/opt/postgresql@18/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"
