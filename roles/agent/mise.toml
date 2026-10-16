@@ -1,5 +1,5 @@
 # A headless machine dedicated to an AI agent (OpenClaw), signed in with the agent's own Apple Account.
-include = ["../../parts/always-on.toml"]
+include = ["../../parts/always-on.toml", "../../parts/headless.toml"]
 
 [tools]
 node = "26.8.1"

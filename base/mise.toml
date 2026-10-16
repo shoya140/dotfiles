@@ -6,7 +6,6 @@ min_version = "2026.10.11"
 "brew:macmon" = "latest"
 "brew:peco" = "latest"
 "brew:tree" = "latest"
-"brew-cask:tailscale-app" = "latest"
 
 [bootstrap.repos]
 "~/.cache/dein/repos/github.com/Shougo/dein.vim" = { url = "https://github.com/Shougo/dein.vim" }

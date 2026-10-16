@@ -53,7 +53,11 @@ mise bootstrap packages apply || echo "Some packages were not installed. Fix the
 echo
 echo "Manual steps left:"
 echo "  - Open a new shell so that the new .zshrc and $HOME/.local/bin/mise are used"
-echo "  - Sign in to Tailscale"
+if grep -q 'parts/headless.toml' "$REPO_DIR/roles/$role/mise.toml"; then
+  echo "  - Sign in to Tailscale: sudo tailscale up"
+else
+  echo "  - Sign in to Tailscale in its menu bar app"
+fi
 if grep -q 'parts/gui.toml' "$REPO_DIR/roles/$role/mise.toml"; then
   echo "  - Allow the apps that ask (Karabiner-Elements, BetterSnapTool, Alfred, ...) in System Settings > Privacy & Security"
   echo "  - Sign in to 1Password, Dropbox and the other apps"

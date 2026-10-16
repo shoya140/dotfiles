@@ -10,9 +10,9 @@ declared in TOML and applied with `mise bootstrap`. Every Mac takes `base` plus 
 | --- | --- | --- |
 | `workstation` | used with a display and keyboard, and kept on as a server | gui, always-on, dev |
 | `mobile` | a laptop carried around | gui, dev |
-| `server` | a headless server used over SSH | always-on, dev |
-| `agent` | a headless Mac for an AI agent (OpenClaw), with its own Apple Account | always-on |
-| `shared-llm` | a headless LLM server shared with others, no Apple Account | always-on |
+| `server` | a headless server used over SSH | always-on, headless, dev |
+| `agent` | a headless Mac for an AI agent (OpenClaw), with its own Apple Account | always-on, headless |
+| `shared-llm` | a headless LLM server shared with others, no Apple Account | always-on, headless |
 
 Machine names, hardware and which Mac has which role are not recorded here. A Mac's role is the link in
 `~/.config/mise/conf.d` (`mise config ls` shows it).
@@ -23,11 +23,11 @@ Machine names, hardware and which Mac has which role are not recorded here. A Ma
 | --- | --- |
 | `base/mise.toml` | what every Mac gets: CLI packages, macOS defaults, staying awake on AC power, every dotfile, dein.vim |
 | `base/home/`, `base/agent-config/` | the dotfiles themselves, linked into `$HOME` |
-| `parts/*.toml` | pieces the roles include: `gui` (GUI and App Store apps, trackpad), `always-on` (wake for network access, restart after a power failure), `dev` (tools and CLI) |
+| `parts/*.toml` | pieces the roles include: `gui` (GUI and App Store apps including the Tailscale app, trackpad), `always-on` (wake for network access, restart after a power failure), `headless` (the Tailscale daemon), `dev` (tools and CLI) |
 | `roles/<role>/mise.toml` | a role: the parts it includes plus its own packages and tools |
 | `setup` | sets up a Mac for a role |
 | `check` | the part of the weekly check that mise has no command for |
-| `base/scripts/` | hooks that `mise bootstrap` runs (restarting Dock and Finder, power settings), and helpers for `check` |
+| `base/scripts/` | hooks that `mise bootstrap` runs (restarting Dock and Finder, power settings, starting the Tailscale daemon), and helpers for `check` |
 
 `setup` links `base` and the role into `~/.config/mise/conf.d`, where mise reads them as global config.
 Dotfiles are linked through those two links (`~/.zshrc -> ~/.config/mise/conf.d/base/home/.zshrc`), so a
@@ -125,6 +125,13 @@ $ ~/dotfiles/check --accept         # take the new preferences as the snapshot
 - Power settings go through `sudo pmset -c` (AC power only) in `base/scripts/power.sh`, and only for the values
   that differ. Every Mac stays awake on AC power; the always-on roles also wake for network access and restart
   after a power failure where the Mac supports it.
+- Tailscale comes in two forms. The Macs with a display (`gui`) get the Tailscale app, which joins the tailnet
+  only after someone logs in. The headless roles get the open source daemon (`brew:tailscale`), which
+  `base/scripts/tailscaled.sh` starts once with `sudo brew services start tailscale`, so the Mac joins at boot.
+  Sign in with `sudo tailscale up`. The daemon leaves DNS alone, so MagicDNS names need `100.100.100.100` as a
+  DNS server. After an upgrade, `sudo brew services restart tailscale` runs the new version. The hook does not
+  start the daemon while the Tailscale app is installed: both keep their state in `/Library/Tailscale`, so a Mac
+  that switches to the daemon removes the app with `brew uninstall --zap --cask tailscale-app` first.
 - macOS defaults are compared with their type, so an integer 1 does not satisfy `true`. The hooks in
   `base/scripts/defaults-hook.sh` restart Dock, Finder and the menu bar only when a run changed their
   preferences. Some settings need a logout or restart.

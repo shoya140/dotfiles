@@ -35,6 +35,9 @@
 "brew-cask:openusage" = "latest"
 "brew-cask:slack" = "latest"
 "brew-cask:tableplus" = "latest"
+# The Tailscale app with its menu bar. It joins the tailnet only after someone logs in; headless.toml has the
+# daemon that joins at boot
+"brew-cask:tailscale-app" = "latest"
 "brew-cask:thaw" = "latest"
 "brew-cask:the-unarchiver" = "latest"
 "brew-cask:visual-studio-code" = "latest"

@@ -1,2 +1,2 @@
 # A headless server used over SSH.
-include = ["../../parts/always-on.toml", "../../parts/dev.toml"]
+include = ["../../parts/always-on.toml", "../../parts/headless.toml", "../../parts/dev.toml"]
