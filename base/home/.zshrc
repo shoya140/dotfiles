@@ -6,8 +6,12 @@ fi
 autoload -Uz compinit vcs_info add-zsh-hook
 compinit -u
 
-# history
-HISTFILE=~/Dropbox/active/config/.zsh_history
+# history (shared through Dropbox where it is installed)
+if [ -d ~/Dropbox/active/config ]; then
+    HISTFILE=~/Dropbox/active/config/.zsh_history
+else
+    HISTFILE=~/.zsh_history
+fi
 HISTSIZE=6000000
 SAVEHIST=6000000
 setopt hist_ignore_dups
@@ -70,7 +74,7 @@ case ${OSTYPE} in
         export PATH=$BREW_ROOT/heroku/bin:$PATH
 
         # ruby (requires $ brew install openssl@3 libyaml)
-        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3) --with-libyaml-dir=$(brew --prefix libyaml)"
+        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$BREW_ROOT/opt/openssl@3 --with-libyaml-dir=$BREW_ROOT/opt/libyaml"
         export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
 
         # dart
@@ -167,6 +171,8 @@ autoload -U add-zsh-hook
 add-zsh-hook chpwd manage_venv
 manage_venv
 
+# mise from mise.run lives here and must win over any Homebrew copy before activation
+export PATH="$HOME/.local/bin:$PATH"
 eval "$(mise activate zsh)"
 
 alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
@@ -179,8 +185,6 @@ export PATH="$BREW_ROOT/opt/postgresql@18/bin:$PATH"
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
-
-export PATH="$HOME/.local/bin:$PATH"
 
 # opencode: built-in websearch (Exa) を有効化 (Apple fm 連携用)
 export OPENCODE_ENABLE_EXA=1

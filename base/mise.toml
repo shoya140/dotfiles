@@ -1,0 +1,145 @@
+min_version = "2026.10.11"
+
+[bootstrap.packages]
+"brew:coreutils" = "latest"
+"brew:git" = "latest"
+"brew:macmon" = "latest"
+"brew:peco" = "latest"
+"brew:tree" = "latest"
+"brew-cask:tailscale-app" = "latest"
+
+[bootstrap.repos]
+"~/.cache/dein/repos/github.com/Shougo/dein.vim" = { url = "https://github.com/Shougo/dein.vim" }
+
+# Every dotfile lives here, not in parts/: a config include cannot hold [dotfiles].
+[dotfiles]
+"~/.zshrc" = { source = "home/.zshrc" }
+"~/.bashrc" = { source = "home/.bashrc" }
+"~/.gitconfig" = { source = "home/.gitconfig" }
+"~/.gitignore_global" = { source = "home/.gitignore_global" }
+"~/.vimrc" = { source = "home/.vimrc" }
+"~/.gvimrc" = { source = "home/.gvimrc" }
+"~/.config/ghostty" = { source = "home/.config/ghostty" }
+"~/.config/herdr/config.toml" = { source = "home/.config/herdr/config.toml" }
+"~/.config/karabiner/karabiner.json" = { source = "home/.config/karabiner/karabiner.json" }
+# Claude Code (default profile and CLAUDE_CONFIG_DIR=~/.claude-api) and Codex
+"~/.claude/settings.json" = { source = "agent-config/claude__settings.json" }
+"~/.claude/CLAUDE.md" = { source = "agent-config/claude__CLAUDE.md" }
+"~/.claude/skills/*" = { source = "agent-config/skills/*" }
+"~/.claude-api/settings.json" = { source = "agent-config/claude__settings.json" }
+"~/.claude-api/CLAUDE.md" = { source = "agent-config/claude__CLAUDE.md" }
+"~/.claude-api/skills/*" = { source = "agent-config/skills/*" }
+"~/.codex/AGENTS.md" = { source = "agent-config/codex__AGENTS.md" }
+"~/.codex/skills/*" = { source = "agent-config/skills/*" }
+
+# Dock, Finder and the menu bar read many preferences only at launch, so restart them when a value changed.
+[bootstrap.hooks]
+pre-defaults = "{{ config_root }}/scripts/defaults-hook.sh pre"
+post-defaults = "{{ config_root }}/scripts/defaults-hook.sh post"
+
+# ------------------------------------------------------------
+# macOS defaults. mise compares types too: an integer 1 does not satisfy true.
+# ------------------------------------------------------------
+
+[bootstrap.macos.defaults.NSGlobalDomain]
+# Key repeat faster than the fastest setting in System Settings
+KeyRepeat = 2
+InitialKeyRepeat = 15
+# Repeat the key when held instead of showing the accent menu
+ApplePressAndHoldEnabled = false
+# No automatic substitution of dashes, periods and quotes
+NSAutomaticDashSubstitutionEnabled = false
+NSAutomaticPeriodSubstitutionEnabled = false
+NSAutomaticQuoteSubstitutionEnabled = false
+# Hide the input source indicator that pops up in the middle of the screen
+TSMLanguageIndicatorEnabled = false
+# Dark mode
+AppleInterfaceStyle = "Dark"
+
+[bootstrap.macos.defaults."com.apple.dock"]
+# Hide the Dock automatically
+autohide = true
+# Small icons that magnify under the cursor
+tilesize = 27
+magnification = true
+largesize = 46
+# Do not show recent applications
+show-recents = false
+# Hot corner: top right puts the display to sleep (no modifier)
+wvous-tr-corner = 10
+wvous-tr-modifier = 0
+# Hot corner: bottom right does nothing
+wvous-br-corner = 1
+wvous-br-modifier = 0
+
+[bootstrap.macos.defaults."com.apple.WindowManager"]
+# Click wallpaper to reveal desktop only in Stage Manager
+EnableStandardClickToShowDesktop = false
+# No margins between tiled windows
+EnableTiledWindowMargins = false
+
+[bootstrap.macos.defaults."com.apple.finder"]
+# Show hidden files
+AppleShowAllFiles = true
+# List view by default
+FXPreferredViewStyle = "Nlsv"
+# New windows open the home directory
+NewWindowTarget = "PfHm"
+# Show only external disks and removable media on the desktop
+ShowHardDrivesOnDesktop = false
+ShowExternalHardDrivesOnDesktop = true
+ShowRemovableMediaOnDesktop = true
+
+[bootstrap.macos.defaults."com.apple.screencapture"]
+# No floating thumbnail after taking a screenshot
+show-thumbnail = false
+
+[bootstrap.macos.defaults."com.apple.menuextra.clock"]
+# Show the day of week in the clock, hide the date
+ShowDayOfWeek = true
+ShowDate = false
+
+# Always show Bluetooth in the menu bar
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.controlcenter"
+key = "Bluetooth"
+host = "current"
+value = 18
+
+# System keyboard shortcuts to disable: ID, then the ASCII code, key code and modifier bitmask it is bound to.
+# IDs are listed at https://github.com/nix-darwin/nix-darwin/blob/master/modules/system/defaults/CustomSystemPreferences/symbolichotkeys.md
+
+# Mission Control (ctrl+up)
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["32"]
+value = { enabled = false, value = { type = "standard", parameters = [65535, 126, 8650752] } }
+
+# Application windows (ctrl+down)
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["33"]
+value = { enabled = false, value = { type = "standard", parameters = [65535, 125, 8650752] } }
+
+# Move left a space (ctrl+left)
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["79"]
+value = { enabled = false, value = { type = "standard", parameters = [65535, 123, 8650752] } }
+
+# Move right a space (ctrl+right)
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["81"]
+value = { enabled = false, value = { type = "standard", parameters = [65535, 124, 8650752] } }
+
+# Show Finder search window (option+cmd+space)
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["65"]
+value = { enabled = false, value = { type = "standard", parameters = [32, 49, 1572864] } }

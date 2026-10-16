@@ -1,0 +1,66 @@
+#!/bin/bash
+# Set up this Mac for one role: install Homebrew and mise, link base and the role into
+# ~/.config/mise/conf.d, then apply them with mise bootstrap. Safe to run again.
+set -euo pipefail
+
+REPO_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+MISE_VERSION=v2026.10.11
+CONF_D="$HOME/.config/mise/conf.d"
+
+usage() {
+  echo "usage: $0 <role>" >&2
+  echo "roles: $(ls "$REPO_DIR/roles" | paste -sd ' ' -)" >&2
+  exit 1
+}
+
+role="${1:-}"
+[ -n "$role" ] && [ -d "$REPO_DIR/roles/$role" ] || usage
+
+for other in $(ls "$REPO_DIR/roles"); do
+  if [ "$other" != "$role" ] && [ -L "$CONF_D/$other" ]; then
+    echo "This Mac already has the role '$other'. Remove $CONF_D/$other first to change roles." >&2
+    exit 1
+  fi
+done
+
+if ! command -v brew >/dev/null 2>&1 && [ ! -x /opt/homebrew/bin/brew ]; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+if [ ! -x "$HOME/.local/bin/mise" ]; then
+  curl -fsSL https://mise.run | MISE_VERSION="$MISE_VERSION" sh
+fi
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
+
+# The previous layout linked these into this repository: the global mise config, whose tools now live in
+# parts/dev.toml, and the dotfiles command, replaced by mise's own commands
+for old_link in "$HOME/.config/mise/config.toml" "$HOME/.local/bin/dotfiles"; do
+  if [ -L "$old_link" ]; then
+    case "$(readlink "$old_link")" in
+      "$HOME"/dotfiles/*|"$REPO_DIR"/*) rm "$old_link" ;;
+    esac
+  fi
+done
+
+mkdir -p "$CONF_D"
+ln -sfn "$REPO_DIR/base" "$CONF_D/base"
+ln -sfn "$REPO_DIR/roles/$role" "$CONF_D/$role"
+echo "Linked base and the role '$role' into $CONF_D"
+
+mise bootstrap
+# mas arrives in the run above, so App Store apps can need a second pass
+mise bootstrap packages apply || echo "Some packages were not installed. Fix the cause and run: mise bootstrap" >&2
+
+echo
+echo "Manual steps left:"
+echo "  - Open a new shell so that the new .zshrc and $HOME/.local/bin/mise are used"
+echo "  - Sign in to Tailscale"
+if grep -q 'parts/gui.toml' "$REPO_DIR/roles/$role/mise.toml"; then
+  echo "  - Allow the apps that ask (Karabiner-Elements, BetterSnapTool, Alfred, ...) in System Settings > Privacy & Security"
+  echo "  - Sign in to 1Password, Dropbox and the other apps"
+fi
+if [ "$role" = agent ]; then
+  echo "  - Configure OpenClaw: openclaw onboard --install-daemon"
+fi
+if [ -x /opt/homebrew/bin/mise ]; then
+  echo "  - Remove the Homebrew copy of mise in favor of $HOME/.local/bin/mise: brew uninstall mise"
+fi

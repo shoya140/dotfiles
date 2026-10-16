@@ -1,0 +1,8 @@
+# A machine used with a display and keyboard that also stays on as a server.
+include = ["../../parts/gui.toml", "../../parts/always-on.toml", "../../parts/dev.toml"]
+
+[bootstrap.packages]
+"brew-cask:adobe-creative-cloud" = "latest"
+"brew-cask:insta360-studio" = "latest"
+"brew-cask:mactex" = "latest"
+"brew-cask:parallels" = "latest"

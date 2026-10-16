@@ -1,0 +1,4 @@
+# Machines that stay reachable: no sleep on AC power, wake for network access, and restart after a power
+# failure where the hardware supports it. pmset needs sudo, so the script runs it only for values that differ.
+[bootstrap.hooks]
+post-defaults = "{{ config_root }}/../../parts/scripts/power.sh"

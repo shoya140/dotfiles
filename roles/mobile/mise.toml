@@ -1,0 +1,2 @@
+# A laptop carried around.
+include = ["../../parts/gui.toml", "../../parts/dev.toml"]

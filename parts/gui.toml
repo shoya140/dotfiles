@@ -1,0 +1,78 @@
+# Apps and settings for machines used with a display. Every GUI app goes here, development apps included,
+# so the headless roles never get one. App Store apps need an Apple Account signed in to the App Store.
+
+[bootstrap.packages]
+"brew:ffmpeg" = "latest"
+"brew:imagemagick" = "latest"
+"brew:mas" = "latest"
+"brew-cask:1password" = "latest"
+"brew-cask:alfred" = "latest"
+"brew-cask:android-studio" = "latest"
+"brew-cask:appcleaner" = "latest"
+"brew-cask:atok" = "latest"
+"brew-cask:betterdisplay" = "latest"
+"brew-cask:chatgpt" = "latest"
+"brew-cask:claude" = "latest"
+"brew-cask:cyberduck" = "latest"
+"brew-cask:deepl" = "latest"
+"brew-cask:discord" = "latest"
+"brew-cask:docker-desktop" = "latest"
+"brew-cask:drawio" = "latest"
+"brew-cask:dropbox" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:google-chrome" = "latest"
+"brew-cask:google-chrome@beta" = "latest"
+"brew-cask:grandperspective" = "latest"
+"brew-cask:gray" = "latest"
+"brew-cask:karabiner-elements" = "latest"
+"brew-cask:keka" = "latest"
+"brew-cask:macvim-app" = "latest"
+"brew-cask:macwhisper" = "latest"
+"brew-cask:mattermost" = "latest"
+"brew-cask:microsoft-office" = "latest"
+"brew-cask:microsoft-teams" = "latest"
+"brew-cask:obsidian" = "latest"
+"brew-cask:openusage" = "latest"
+"brew-cask:slack" = "latest"
+"brew-cask:tableplus" = "latest"
+"brew-cask:thaw" = "latest"
+"brew-cask:the-unarchiver" = "latest"
+"brew-cask:visual-studio-code" = "latest"
+"brew-cask:vlc" = "latest"
+"brew-cask:xcodes-app" = "latest"
+"brew-cask:zoom" = "latest"
+"brew-cask:zotero" = "latest"
+"mas:1569813296" = "latest" # 1Password for Safari
+"mas:1440147259" = "latest" # AdGuard Mini
+"mas:937984704" = "latest" # Amphetamine
+"mas:417375580" = "latest" # BetterSnapTool
+"mas:1024640650" = "latest" # CotEditor
+"mas:361285480" = "latest" # Keynote
+"mas:539883307" = "latest" # LINE
+"mas:714196447" = "latest" # MenuBar Stats
+"mas:361304891" = "latest" # Numbers
+"mas:361309726" = "latest" # Pages
+"mas:1153157709" = "latest" # Speedtest
+"mas:1450874784" = "latest" # Transporter
+"mas:1607635845" = "latest" # Velja
+"mas:775737590" = "latest" # iA Writer
+
+[bootstrap.macos.defaults.NSGlobalDomain]
+# Trackpad tracking speed
+"com.apple.trackpad.scaling" = 0.875
+
+[bootstrap.macos.defaults."com.apple.AppleMultitouchTrackpad"]
+Clicking = true
+# Three finger drag
+TrackpadThreeFingerDrag = true
+
+[bootstrap.macos.defaults."com.apple.driver.AppleBluetoothMultitouch.trackpad"]
+Clicking = true
+TrackpadThreeFingerDrag = true
+
+# Tap to click (written for the built-in trackpad, Bluetooth trackpads and the login screen)
+[[bootstrap.macos.defaults_entries]]
+domain = "NSGlobalDomain"
+key = "com.apple.mouse.tapBehavior"
+host = "current"
+value = 1

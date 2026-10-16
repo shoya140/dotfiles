@@ -1,74 +1,130 @@
 dotfiles
 ======================
 
-Declarative macOS setup: symlinks, Homebrew / App Store packages, macOS `defaults`,
-and a drift check to run by hand. Everything is driven by `bin/dotfiles`.
+Declarative macOS setup on [mise](https://mise.jdx.dev): packages, dotfiles, macOS `defaults` and tools are
+declared in TOML and applied with `mise bootstrap`. Every Mac takes `base` plus exactly one role.
+
+## Roles
+
+| Role | Kind of Mac | Includes |
+| --- | --- | --- |
+| `workstation` | used with a display and keyboard, and kept on as a server | gui, always-on, dev |
+| `mobile` | a laptop carried around | gui, dev |
+| `server` | a headless server used over SSH | always-on, dev |
+| `agent` | a headless Mac for an AI agent (OpenClaw), with its own Apple Account | always-on |
+| `shared-llm` | a headless LLM server shared with others, no Apple Account | always-on |
+
+Machine names, hardware and which Mac has which role are not recorded here. A Mac's role is the link in
+`~/.config/mise/conf.d` (`mise config ls` shows it).
 
 ## Layout
 
 | Path | Declares |
 | --- | --- |
-| `links.conf` | symlinks from this repo into `$HOME` |
-| `packages/brew_tap.txt`, `brew.txt`, `brew_cask.txt`, `mas.txt` | Homebrew taps, formulae, casks, App Store apps |
-| `macos/defaults.conf` | `defaults` settings (`[domain]` sections, `key type value` lines) |
-| `macos/hotkeys.conf` | system keyboard shortcuts to disable |
-| `macos/snapshot-ignore.conf` | keys ignored by the snapshot diff |
-| `.zshrc`, `.gitconfig`, `.vimrc`, `.config/...` | the config files themselves |
-| `agent-config/` | Claude Code / Codex settings and skills |
-| `bin/dotfiles`, `lib/` | the CLI (bash 3.2 compatible, no dependencies beyond macOS + Homebrew) |
+| `base/mise.toml` | what every Mac gets: CLI packages, macOS defaults, every dotfile, dein.vim |
+| `base/home/`, `base/agent-config/` | the dotfiles themselves, linked into `$HOME` |
+| `parts/*.toml` | pieces the roles include: `gui` (GUI and App Store apps, trackpad), `always-on` (power settings), `dev` (tools and CLI) |
+| `roles/<role>/mise.toml` | a role: the parts it includes plus its own packages and tools |
+| `setup` | sets up a Mac for a role |
+| `check` | the part of the weekly check that mise has no command for |
+| `base/scripts/`, `parts/scripts/` | hooks that `mise bootstrap` runs, and helpers for `check` |
+
+`setup` links `base` and the role into `~/.config/mise/conf.d`, where mise reads them as global config.
+Dotfiles are linked through those two links (`~/.zshrc -> ~/.config/mise/conf.d/base/home/.zshrc`), so a
+moved repository only needs the two links updated.
 
 ## Set up a new Mac
 
-```
-$ xcode-select --install
-$ git clone https://github.com/shoya140/dotfiles.git ~/dotfiles
-$ ~/dotfiles/bin/dotfiles install
-```
+1. By hand in System Settings:
+   - General > About: set the computer name
+   - General > Sharing: turn on Screen Sharing and Remote Login
+   - Privacy & Security: turn off FileVault, so the Mac is reachable over Tailscale after power-on
+   - App Store: sign in when the role has App Store apps (workstation and mobile: the personal Apple Account,
+     agent: the agent's Apple Account, shared-llm: none)
+2. In a terminal:
 
-`install` installs Homebrew if needed, then runs `packages`, `link`, `tools` and `macos` in order.
-Every step is idempotent, so it is also the way to bring an existing machine up to date.
-Sign in to the App Store beforehand so that `mas install` works. Some macOS settings need a logout
-or restart. Afterwards `dotfiles` is on PATH via `~/.local/bin`.
+   ```
+   xcode-select --install
+   git clone https://github.com/shoya140/dotfiles.git ~/dotfiles
+   ~/dotfiles/setup <role>
+   ```
+
+`setup` installs Homebrew and mise (`~/.local/bin/mise`) when they are missing, links `base` and the role,
+and runs `mise bootstrap`, which asks for confirmation and the sudo password. It ends with the manual steps
+left for the role, such as signing in to Tailscale. Every step is idempotent, so it is safe to run again.
+
+To replace a Mac, read the old one's role with `mise config ls` and set up the new one with the same role.
 
 ## Commands
 
-| Command | Direction | What it does |
-| --- | --- | --- |
-| `dotfiles check` | read only | reports drift between the repo and this machine |
-| `dotfiles sync` | machine to repo | regenerates `packages/*.txt`, rewrites changed values in `macos/defaults.conf`, refreshes the snapshot baseline. Review `git diff`, then commit |
-| `dotfiles packages` / `link` / `macos` / `tools` | repo to machine | applies one part of the declaration |
-| `dotfiles snapshot` | | accepts the current `defaults` state as the new baseline |
+After `setup`, everything is a mise command.
+
+| To | Run |
+| --- | --- |
+| apply the repo to this Mac | `mise bootstrap` (`--dry-run` previews) |
+| see the state of everything declared | `mise bootstrap status` |
+| declare packages and install them | `mise bootstrap packages use -p ~/dotfiles/<file> <package>...` (`--no-install` only declares) |
+| upgrade the declared packages and tools | `mise bootstrap --update --upgrade` |
+| see this Mac's role | `mise config ls` |
+
+`<file>` is `base/mise.toml`, `parts/<part>.toml` or `roles/<role>/mise.toml`, and a package is
+`brew:<formula>`, `brew-cask:<token>` or `mas:<id>`.
+
+To bring another Mac up to date: `git -C ~/dotfiles pull && mise bootstrap`. A change to dotfiles alone needs
+only the pull.
 
 ## Weekly maintenance
 
-Run `dotfiles check` about once a week, or `/dotfiles` in Claude Code, which runs the check and
-walks through each item asking whether to update the repo or apply the repo to the machine.
-Nothing runs automatically. The check covers:
-
-1. the repo is committed, pushed and not behind origin
-2. every symlink in `links.conf` points into the repo
-3. installed taps, formulae, casks and App Store apps match `packages/`
-4. every value in `macos/defaults.conf` and `macos/hotkeys.conf` matches `defaults`
-5. the tracked `defaults` domains have not changed since the last snapshot. This is how a setting
-   changed in System Settings shows up before it is declared
-
-Typical flow after changing something in System Settings:
+Run `/dotfiles` in Claude Code about once a week. It runs the commands below, walks through each item and asks
+where to declare it. Nothing runs automatically. By hand:
 
 ```
-$ dotfiles check            # the snapshot diff shows the changed key
-$ vim macos/defaults.conf   # declare it (or add it to macos/snapshot-ignore.conf)
-$ dotfiles snapshot         # accept the new baseline
-$ git commit
+git -C ~/dotfiles pull
+mise bootstrap --dry-run                               # declared but not in place on this Mac
+mise bootstrap packages prune --dry-run                # formulae that no config declares
+mise bootstrap packages prune --dry-run -m brew-cask   # casks that no config declares
+~/dotfiles/check                                       # what mise has no command for
 ```
 
-Snapshots live in `~/.local/state/dotfiles/snapshot/`. Files replaced by `dotfiles link` are kept
-under `~/.local/state/dotfiles/backup/`.
+`prune --dry-run` only lists. Without `--dry-run` it uninstalls every formula that no config declares, including
+ones installed with Homebrew itself. Casks installed with Homebrew show up as `skipped: Homebrew owns this cask`.
+
+`check` covers:
+
+1. App Store apps installed but not declared
+2. the tracked `defaults` domains changed since the last snapshot, which is how a setting changed in System
+   Settings shows up before it is declared (`check --accept` takes the current preferences as the snapshot)
+3. Remote Login and Screen Sharing are on, and FileVault is off on the always-on roles
+4. entries in the Mac's own `~/.config/mise/config.toml`
+
+Typical flows:
+
+```
+$ brew install --cask foo                                # try an app
+$ mise bootstrap packages prune --dry-run -m brew-cask   # it shows up as not declared
+$ mise bootstrap packages use -p ~/dotfiles/parts/gui.toml brew-cask:foo   # keep it on every Mac with a display
+
+$ ~/dotfiles/check                  # a setting changed in System Settings shows up in the snapshot diff
+$ vim ~/dotfiles/base/mise.toml     # declare it (or ignore the key in base/scripts/snapshot-ignore.conf)
+$ ~/dotfiles/check --accept         # take the new preferences as the snapshot
+```
 
 ## Notes
 
-- `macos/defaults.conf`: `[domain]` or `[domain -currentHost]` headers, then `key type value`
-  lines. Types are `bool`, `int`, `float`, `string`. `dotfiles macos` writes only values that differ.
-- Package lists are plain sorted lists (`brew leaves`, `brew list --cask`, `mas list`). `sync`
-  overwrites them with this machine's state, so check `git diff` when a machine intentionally lacks
-  something.
-- To add a config file: put it in the repo and add a line to `links.conf`, then run `dotfiles link`.
+- `parts/*.toml` are config includes. They can hold `[bootstrap]`, `[tools]` and hooks but not `[dotfiles]`,
+  which makes mise reject the whole config, so every dotfile is declared in `base/mise.toml`. A config file for
+  an app the Mac does not have is simply unused.
+- A mistake in any of these files stops mise on every Mac that loads it. Run `mise bootstrap --dry-run` before
+  committing.
+- The files need mise 2026.10.11 or later (`min_version` in `base/mise.toml`); `setup` installs that version.
+  `mise self-update` updates it. Try a new version on one Mac before the others.
+- mise installs packages itself instead of calling `brew`. Formulae land in `/opt/homebrew` with Homebrew
+  receipts, so `brew` manages them too, but casks installed by mise are upgraded by mise
+  (`mise bootstrap --upgrade`). Homebrew stays installed for trying things and for the rare cask mise cannot
+  install, and `brew upgrade` updates what it installed.
+- macOS defaults are compared with their type, so an integer 1 does not satisfy `true`. The hooks in
+  `base/scripts/defaults-hook.sh` restart Dock, Finder and the menu bar only when a run changed their
+  preferences. Some settings need a logout or restart.
+- `mise use -g` writes the Mac's own `~/.config/mise/config.toml`, which is not in this repo. `check` lists its
+  entries so that they can move to base, a part or a role.
+- Snapshots live in `~/.local/state/dotfiles/snapshot/`.
