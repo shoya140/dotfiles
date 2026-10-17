@@ -53,6 +53,7 @@ python = "3.14.7"
 # The Tailscale app with its menu bar. It joins the tailnet only after someone logs in; the cui role has the
 # daemon that joins at boot
 "brew-cask:tailscale-app" = "latest"
+"brew-cask:telegram" = "latest"
 "brew-cask:thaw" = "latest"
 "brew-cask:the-unarchiver" = "latest"
 "brew-cask:visual-studio-code" = "latest"
