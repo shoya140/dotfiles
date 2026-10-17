@@ -60,7 +60,6 @@ case ${OSTYPE} in
         fi
 
         export PATH=$BREW_ROOT/bin:$BREW_ROOT/sbin:$PATH
-        fpath=($BREW_ROOT/share/zsh-completions $fpath)
 
         # git
         export PATH=$BREW_ROOT/share/git-core/contrib/diff-highlight:$PATH
