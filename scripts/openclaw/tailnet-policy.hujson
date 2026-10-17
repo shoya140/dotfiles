@@ -1,0 +1,44 @@
+// Tailnet policy for the OpenClaw host (tag:openclaw) and the oMLX host it uses (tag:omlx).
+// Paste it in the admin console under Access controls, replacing you@example.com in "tests" with the
+// owner's login. Each device enforces the grants on the traffic it receives, so a compromised tagged host
+// cannot open connections the policy does not grant.
+{
+	"tagOwners": {
+		"tag:openclaw": ["autogroup:admin"],
+		"tag:omlx":     ["autogroup:admin"],
+	},
+
+	"grants": [
+		// The owner's own devices reach each other as before.
+		{"src": ["autogroup:member"], "dst": ["autogroup:member"], "ip": ["*"]},
+		// Only the owner reaches the tagged hosts (SSH, Screen Sharing, the Control UI behind Serve).
+		{"src": ["autogroup:owner"], "dst": ["tag:openclaw", "tag:omlx"], "ip": ["*"]},
+		// The OpenClaw host reaches the oMLX Serve endpoint and nothing else. Nothing starts from tag:omlx.
+		{"src": ["tag:openclaw"], "dst": ["tag:omlx"], "ip": ["tcp:443"]},
+	],
+
+	"ssh": [
+		{
+			"action": "check",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+	],
+
+	"tests": [
+		{
+			"src":    "you@example.com",
+			"accept": ["tag:openclaw:22", "tag:openclaw:443", "tag:omlx:22", "tag:omlx:443"],
+		},
+		{
+			"src":    "tag:openclaw",
+			"accept": ["tag:omlx:443"],
+			"deny":   ["tag:omlx:22", "tag:omlx:8000", "you@example.com:22", "you@example.com:443"],
+		},
+		{
+			"src":  "tag:omlx",
+			"deny": ["tag:openclaw:22", "tag:openclaw:443", "you@example.com:22"],
+		},
+	],
+}

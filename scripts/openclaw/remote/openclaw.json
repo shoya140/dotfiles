@@ -1,0 +1,158 @@
+{
+  "gateway": {
+    "mode": "local",
+    "bind": "loopback",
+    "port": 18789,
+    "auth": {
+      "mode": "token",
+      "token": { "source": "store", "provider": "default", "id": "OPENCLAW_GATEWAY_TOKEN" },
+      "allowTailscale": true
+    },
+    "tailscale": { "mode": "serve" },
+    "nodes": {
+      "pairing": { "sshVerify": false },
+      "pluginTools": { "enabled": false },
+      "allowSkills": false,
+      "browser": { "mode": "off" }
+    }
+  },
+  "discovery": { "mdns": { "mode": "off" } },
+  "update": {
+    "checkOnStart": false,
+    "auto": { "enabled": false }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "anthropic": {
+        "apiKey": { "source": "store", "provider": "default", "id": "ANTHROPIC_API_KEY" }
+      },
+      "omlx": {
+        "api": "openai-completions",
+        "baseUrl": "__OMLX_URL__",
+        "apiKey": { "source": "store", "provider": "default", "id": "OMLX_API_KEY" },
+        "timeoutSeconds": 1800,
+        "models": [
+          {
+            "id": "__CHAT_MODEL__",
+            "name": "__CHAT_MODEL__ (oMLX)",
+            "reasoning": true,
+            "input": [],
+            "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 0,
+            "maxTokens": 0
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "ownership": "explicit",
+    "defaults": {
+      "systemAgent": { "agentId": "main" },
+      "model": { "primary": "omlx/__CHAT_MODEL__" },
+      "sandbox": { "mode": "off" },
+      "modelPolicy": {},
+      "models": {
+        "anthropic/claude-fable-5-1": { "alias": "fable" },
+        "anthropic/claude-opus-5-5": { "alias": "opus" },
+        "anthropic/claude-sonnet-5-5": { "alias": "sonnet" },
+        "anthropic/claude-haiku-5-5": { "alias": "haiku" },
+        "omlx/__CHAT_MODEL__": { "alias": "local" }
+      }
+    },
+    "entries": {
+      "main": {
+        "workspace": "~/.openclaw/workspace-main",
+        "model": "anthropic/claude-opus-5-5",
+        "heartbeat": { "every": "30m" }
+      },
+      "personal": {
+        "workspace": "~/.openclaw/workspace-personal",
+        "model": { "primary": "omlx/__CHAT_MODEL__", "fallbacks": [] },
+        "heartbeat": { "every": "0m" },
+        "tools": { "loopDetection": { "enabled": true } }
+      }
+    }
+  },
+  "bindings": [
+    { "agentId": "main", "match": { "channel": "telegram", "accountId": "main" } },
+    { "agentId": "personal", "match": { "channel": "telegram", "accountId": "personal" } }
+  ],
+  "tools": {
+    "profile": "full",
+    "exec": { "host": "gateway", "mode": "full" },
+    "sessions": { "visibility": "agent" },
+    "agentToAgent": { "enabled": false },
+    "web": { "search": { "provider": "brave" } }
+  },
+  "browser": {
+    "extensionRelay": { "allowLegacyAuth": false }
+  },
+  "memory": {
+    "search": {
+      "provider": "openai-compatible",
+      "model": "__EMBEDDING_MODEL__",
+      "remote": {
+        "baseUrl": "__OMLX_URL__",
+        "apiKey": { "source": "store", "provider": "default", "id": "OMLX_API_KEY" }
+      },
+      "fallback": "none",
+      "store": { "fts": { "tokenizer": "trigram" } }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "anthropic": { "enabled": true },
+      "brave": {
+        "enabled": true,
+        "config": {
+          "webSearch": {
+            "apiKey": { "source": "store", "provider": "default", "id": "BRAVE_API_KEY" },
+            "mode": "web"
+          }
+        }
+      },
+      "bonjour": { "enabled": false }
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "defaultAccount": "main",
+      "dmPolicy": "allowlist",
+      "allowFrom": ["__OWNER_ID__"],
+      "groupPolicy": "disabled",
+      "groupAllowFrom": ["__OWNER_ID__"],
+      "configWrites": false,
+      "accounts": {
+        "main": {
+          "botToken": { "source": "store", "provider": "default", "id": "TELEGRAM_MAIN_BOT_TOKEN" }
+        },
+        "personal": {
+          "botToken": { "source": "store", "provider": "default", "id": "TELEGRAM_PERSONAL_BOT_TOKEN" }
+        }
+      }
+    }
+  },
+  "commands": {
+    "ownerAllowFrom": ["telegram:__OWNER_ID__"]
+  },
+  "security": {
+    "audit": {
+      "suppressions": [
+        {
+          "checkId": "tools.exec.security_full_configured",
+          "reason": "Dedicated single-owner Mac: both agents run host commands without approval by design. DMs are limited to the owner and groups are off."
+        },
+        {
+          "checkId": "gateway.trusted_proxies_missing",
+          "reason": "The Control UI is reached only through the Tailscale Serve proxy that OpenClaw manages, so no proxy needs to be trusted."
+        }
+      ]
+    }
+  },
+  "meta": {
+    "migrations": { "utilityModelSeparation": true, "modelPolicyAllowlist": true, "webhookListeners": true }
+  }
+}

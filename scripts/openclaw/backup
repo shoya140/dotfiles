@@ -1,0 +1,41 @@
+#!/bin/bash
+# Back up OpenClaw on another Mac with its own backup command and copy the archive here:
+# backup <user@host> <directory>. The archive holds the API keys and bot tokens, so it is saved with mode 600.
+set -euo pipefail
+
+[ $# -eq 2 ] || { echo "usage: $0 <user@host> <directory>" >&2; exit 1; }
+target=$1
+dest=$2
+mkdir -p "$dest"
+
+work=$(mktemp -d)
+ssh_opts=(-o ForwardAgent=no -o ForwardX11=no -o ClearAllForwardings=yes
+  -o ControlMaster=auto -o "ControlPath=$work/ssh" -o ControlPersist=120)
+remote=""
+cleanup() {
+  [ -z "$remote" ] || ssh "${ssh_opts[@]}" "$target" "rm -rf '$remote'" || true
+  ssh -S "$work/ssh" -O exit "$target" 2>/dev/null || true
+  rm -rf "$work"
+}
+trap cleanup EXIT
+remote_path='export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:/opt/homebrew/bin:/usr/bin:/bin"'
+
+remote=$(ssh "${ssh_opts[@]}" "$target" 'mktemp -d')
+echo "Creating the backup on $target"
+ssh "${ssh_opts[@]}" "$target" "$remote_path; openclaw backup create --output '$remote' --verify --json" > "$work/result.json"
+jq -e '.verified == true' "$work/result.json" >/dev/null || { cat "$work/result.json" >&2; exit 1; }
+archive=$(jq -r '.archivePath' "$work/result.json")
+local_file="$dest/$(basename "$archive")"
+
+echo "Copying it to $local_file"
+umask 077
+ssh "${ssh_opts[@]}" "$target" "cat '$archive'" > "$local_file.part"
+remote_sum=$(ssh "${ssh_opts[@]}" "$target" "shasum -a 256 '$archive'" | awk '{ print $1 }')
+local_sum=$(shasum -a 256 "$local_file.part" | awk '{ print $1 }')
+if [ "$remote_sum" != "$local_sum" ]; then
+  rm -f "$local_file.part"
+  echo "The copy does not match the archive on $target" >&2
+  exit 1
+fi
+mv "$local_file.part" "$local_file"
+echo "Saved $local_file"

@@ -1,0 +1,65 @@
+#!/bin/bash
+# Set up OpenClaw on another Mac over SSH, as the account that will run it: setup <user@host> [options].
+# Safe to run again. See README.md for what it does and what to prepare.
+set -euo pipefail
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+
+usage() {
+  cat >&2 <<EOF
+usage: $0 <user@host> [--omlx <user@host>] [--restore <archive>]
+  --omlx      read the oMLX endpoint, models and API key from the oMLX host (on the first run, and after
+              changing models there)
+  --restore   restore an archive made by the backup script
+EOF
+  exit 1
+}
+
+target="" omlx="" restore=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --omlx) [ $# -ge 2 ] || usage; omlx=$2; shift 2 ;;
+    --restore) [ $# -ge 2 ] || usage; restore=$2; shift 2 ;;
+    -*) usage ;;
+    *) [ -z "$target" ] || usage; target=$1; shift ;;
+  esac
+done
+[ -n "$target" ] || usage
+if [ -n "$restore" ] && [ ! -f "$restore" ]; then
+  echo "No such file: $restore" >&2
+  exit 1
+fi
+
+work=$(mktemp -d)
+# No agent or port forwarding, so nothing on the target can reach back through these connections
+ssh_opts=(-o ForwardAgent=no -o ForwardX11=no -o ClearAllForwardings=yes
+  -o ControlMaster=auto -o "ControlPath=$work/ssh" -o ControlPersist=120)
+remote=""
+cleanup() {
+  [ -z "$remote" ] || ssh "${ssh_opts[@]}" "$target" "rm -rf '$remote'" || true
+  ssh -S "$work/ssh" -O exit "$target" 2>/dev/null || true
+  rm -rf "$work"
+}
+trap cleanup EXIT
+
+if [ -n "$omlx" ]; then
+  echo "Reading the oMLX client settings from $omlx"
+  ssh -o ForwardAgent=no -o ClearAllForwardings=yes "$omlx" 'cat ~/.config/omlx/client.env' > "$work/omlx.env"
+fi
+
+remote=$(ssh "${ssh_opts[@]}" "$target" 'mktemp -d')
+COPYFILE_DISABLE=1 tar -C "$SCRIPT_DIR" -cf - remote -C "$SCRIPT_DIR/.." lib |
+  ssh "${ssh_opts[@]}" "$target" "umask 077 && tar -xf - -C '$remote'"
+
+command="/bin/bash '$remote/remote/setup.sh'"
+if [ -n "$omlx" ]; then
+  ssh "${ssh_opts[@]}" "$target" "umask 077 && cat > '$remote/omlx.env'" < "$work/omlx.env"
+  command="$command --omlx-env '$remote/omlx.env'"
+fi
+if [ -n "$restore" ]; then
+  echo "Copying $(basename "$restore") to $target"
+  ssh "${ssh_opts[@]}" "$target" "umask 077 && cat > '$remote/restore.tar.gz'" < "$restore"
+  command="$command --restore '$remote/restore.tar.gz'"
+fi
+
+ssh -t "${ssh_opts[@]}" "$target" "$command"

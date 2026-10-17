@@ -24,6 +24,7 @@ applies that file along with the repo.
 | `base/home/`, `base/agent-config/` | the dotfiles, linked into `$HOME` |
 | `base/scripts/` | hooks for `mise bootstrap` (restarting Dock and Finder, power settings) and helpers for `check` |
 | `roles/<role>/` | a role's `mise.toml`, and for `cui` the hook that starts the Tailscale daemon |
+| `scripts/` | scripts run from this Mac over SSH that set up an OpenClaw host and the oMLX server it uses ([how to use them](scripts/README.md)) |
 | `setup` | sets up a Mac for a role |
 | `check` | the part of the weekly check that mise has no command for |
 
