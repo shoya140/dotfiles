@@ -119,7 +119,7 @@ $ ~/dotfiles/check --accept         # take the new preferences as the snapshot
   and starting up when power returns after a failure (`autorestart 1`, desktop Macs only).
 - Tailscale: the app on `gui` joins the tailnet only after someone logs in. The open source daemon on `cui`
   (`brew:tailscale`, started once with `sudo brew services start tailscale`) joins at boot; sign in with
-  `sudo tailscale up`, and after an upgrade run `sudo brew services restart tailscale`. The daemon leaves DNS
-  alone, so MagicDNS names need `100.100.100.100` as a DNS server. The app and the daemon share
-  `/Library/Tailscale`, so the hook does not start the daemon while the app is installed; remove it with
-  `brew uninstall --zap --cask tailscale-app` first.
+  `sudo tailscale up`, and after an upgrade run `sudo brew services restart tailscale`. The daemon sends the
+  tailnet's names to `100.100.100.100` through files in `/etc/resolver`, so MagicDNS names resolve as with
+  the app. The app and the daemon share `/Library/Tailscale`, so the hook does not start the daemon while the
+  app is installed; remove it with `brew uninstall --zap --cask tailscale-app` first.
