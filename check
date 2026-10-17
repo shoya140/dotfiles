@@ -1,6 +1,6 @@
 #!/bin/bash
-# Report what mise has no command for: App Store apps nobody declared, System Settings changed since the
-# last snapshot, and entries in this Mac's own mise config.
+# Report what mise has no command for: App Store apps nobody declared and System Settings changed since the
+# last snapshot.
 # `check --accept` takes the current preferences as the new snapshot. Runs on the bash 3.2 that ships with macOS.
 set -euo pipefail
 
@@ -113,7 +113,7 @@ check_snapshot() {
   done <<< "$domains"
   [ "$created" -eq 0 ] || info "$created baseline snapshot(s) created in $SNAPSHOT_DIR"
   [ "$same" -eq 0 ] || ok "$same domain(s) unchanged since the last snapshot"
-  [ "$changed" -eq 0 ] || info "To keep a change, declare it in base/mise.toml or a part, or ignore the key in base/scripts/snapshot-ignore.conf, then run: $REPO_DIR/check --accept"
+  [ "$changed" -eq 0 ] || info "To keep a change, declare it in base/mise.toml or the role, or ignore the key in base/scripts/snapshot-ignore.conf, then run: $REPO_DIR/check --accept"
 }
 
 snapshot_accept() {
@@ -127,19 +127,6 @@ snapshot_accept() {
   ok "took the current preferences as the snapshot in $SNAPSHOT_DIR"
 }
 
-check_local_config() {
-  section "This Mac's own mise config"
-  local entries=""
-  if [ -f "$MISE_CONFIG_DIR/config.toml" ]; then
-    entries=$(sed -E '/^[[:space:]]*(#|$)/d' "$MISE_CONFIG_DIR/config.toml")
-  fi
-  if [ -n "$entries" ]; then
-    drift "entries in $MISE_CONFIG_DIR/config.toml, which is not in the repo (move them to base, a part or the role)" "$entries"
-  else
-    ok "$MISE_CONFIG_DIR/config.toml is empty or absent"
-  fi
-}
-
 cmd_check() {
   local roles
   roles=$(linked_roles | paste -sd ' ' -)
@@ -147,7 +134,6 @@ cmd_check() {
   [ -n "$roles" ] || drift "no role is linked in $MISE_CONFIG_DIR/conf.d (run: $REPO_DIR/setup <role>)"
   check_mas
   check_snapshot
-  check_local_config
   section "Summary"
   if [ "$DRIFT_COUNT" -eq 0 ]; then
     ok "nothing to review"

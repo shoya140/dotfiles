@@ -1,0 +1,9 @@
+# Macs nobody logs in to, used over SSH. They join the tailnet at boot with the open source Tailscale daemon
+# (the app in the gui role waits for a login), and on AC power they wake for network access and start up again
+# when power returns after a failure.
+[bootstrap.packages]
+"brew:tailscale" = "latest"
+
+[bootstrap.hooks]
+post-packages = "{{ config_root }}/tailscaled.sh"
+post-defaults = "{{ config_root }}/../../base/scripts/power.sh womp=1 autorestart=1"

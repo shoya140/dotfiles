@@ -1,7 +1,0 @@
-# Machines that nobody logs in to: the open source Tailscale daemon runs from /Library/LaunchDaemons, so the
-# Mac joins the tailnet at boot, before any login. The Tailscale app in gui.toml would wait for a login.
-[bootstrap.packages]
-"brew:tailscale" = "latest"
-
-[bootstrap.hooks]
-post-packages = "{{ config_root }}/../../base/scripts/tailscaled.sh"

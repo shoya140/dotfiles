@@ -1,4 +1,0 @@
-# Machines that stay reachable: on AC power they wake for network access and restart after a power failure
-# where the hardware supports it. Staying awake on AC power comes from base.
-[bootstrap.hooks]
-post-defaults = "{{ config_root }}/../../base/scripts/power.sh womp=1 autorestart=1"

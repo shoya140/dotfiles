@@ -10,7 +10,7 @@ min_version = "2026.10.11"
 [bootstrap.repos]
 "~/.cache/dein/repos/github.com/Shougo/dein.vim" = { url = "https://github.com/Shougo/dein.vim" }
 
-# Every dotfile lives here, not in parts/: a config include cannot hold [dotfiles].
+# Every Mac links every dotfile; a config file for an app the Mac does not have is simply unused.
 [dotfiles]
 "~/.zshrc" = { source = "home/.zshrc" }
 "~/.bashrc" = { source = "home/.bashrc" }
@@ -32,7 +32,7 @@ min_version = "2026.10.11"
 "~/.codex/skills/*" = { source = "agent-config/skills/*" }
 
 # Dock, Finder and the menu bar read many preferences only at launch, so restart them when a value changed.
-# Every Mac stays awake while on AC power; parts/always-on.toml adds the rest of the power settings.
+# Every Mac stays awake while on AC power; the cui role adds the settings that keep a server reachable.
 [bootstrap.hooks]
 pre-defaults = "{{ config_root }}/scripts/defaults-hook.sh pre"
 post-defaults = [
