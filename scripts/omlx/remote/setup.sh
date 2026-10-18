@@ -283,16 +283,20 @@ if [ -n "$running" ]; then
     out=$(sudo nc -v -z -G 5 "$1" "$2" 2>&1) && return 1
     grep -q 'timed out' <<<"$out"
   }
-  # pf turns the account away at once with a reset. Root is not subject to it, so a port that root reaches, or that
-  # the router drops until the attempt times out, shows whether pf acted; a port the router refuses itself does not.
+  # Root is not subject to pf. On a router port that root connects to, the account's connect must fail. On a port
+  # the router drops, where root times out, only an immediate refusal shows that pf acted: the reset pf answers
+  # with, which does not reach every Mac. A port the router refuses itself shows nothing.
   testable() {
     local out
-    out=$(sudo nc -v -z -G 5 "$1" "$2" 2>&1) || grep -q 'timed out' <<<"$out"
+    root_connects=""
+    out=$(sudo nc -v -z -G 5 "$1" "$2" 2>&1) && { root_connects=1; return 0; }
+    grep -q 'timed out' <<<"$out"
   }
   turned_away() {
     local out
     out=$(as_service nc -v -z -G 5 "$1" "$2" 2>&1) && return 1
-    ! grep -q 'timed out' <<<"$out"
+    grep -q 'nc: connectx' <<<"$out" || return 1
+    [ -n "$root_connects" ] || ! grep -q 'timed out' <<<"$out"
   }
 
   # The first HTTPS request makes Tailscale fetch the certificate
