@@ -90,6 +90,20 @@
   "browser": {
     "extensionRelay": { "allowLegacyAuth": false }
   },
+  "tts": {
+    "auto": "tagged",
+    "mode": "final",
+    "provider": "tts-local-cli",
+    "providers": {
+      "tts-local-cli": {
+        "command": "__HOME__/.openclaw/workspace-main/bin/luma-tts",
+        "args": ["{{Text}}", "{{OutputPath}}"],
+        "outputFormat": "opus",
+        "timeoutMs": 120000,
+        "env": { "LUMA_TTS_FORMAT": "opus" }
+      }
+    }
+  },
   "memory": {
     "search": {
       "provider": "openai-compatible",

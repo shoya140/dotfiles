@@ -183,9 +183,9 @@ fi
 step "Config"
 jq --arg owner "$OWNER_ID" --arg url "$OMLX_URL" --arg chat "$OMLX_CHAT_MODEL" \
   --arg embedding "$OMLX_EMBEDDING_MODEL" --arg input "$OMLX_CHAT_INPUT" --argjson context "$OMLX_CHAT_CONTEXT" \
-  --argjson max_tokens "$OMLX_CHAT_MAX_TOKENS" '
+  --argjson max_tokens "$OMLX_CHAT_MAX_TOKENS" --arg home "$HOME" '
   def fill: gsub("__OWNER_ID__"; $owner) | gsub("__OMLX_URL__"; $url)
-    | gsub("__CHAT_MODEL__"; $chat) | gsub("__EMBEDDING_MODEL__"; $embedding);
+    | gsub("__CHAT_MODEL__"; $chat) | gsub("__EMBEDDING_MODEL__"; $embedding) | gsub("__HOME__"; $home);
   walk(if type == "object" then with_entries(.key |= fill) elif type == "string" then fill else . end)
   | .models.providers.omlx.models[0].input = ($input | split(","))
   | .models.providers.omlx.models[0].contextWindow = $context
@@ -282,6 +282,9 @@ check "personal answers with omlx/$OMLX_CHAT_MODEL" answers personal "omlx/$OMLX
 check "the memory index of main matches $OMLX_EMBEDDING_MODEL" memory_ready main
 check "the memory index of personal matches $OMLX_EMBEDDING_MODEL" memory_ready personal
 check "Telegram accounts pass the probe" openclaw channels status --probe
+# The agents keep their own speech command; setup only points OpenClaw at it
+tts_command=$(jq -r '.tts.providers["tts-local-cli"].command // empty' "$CONFIG")
+[ -z "$tts_command" ] || check "the speech command $tts_command exists" test -x "$tts_command"
 check "the Control UI answers through Tailscale Serve" curl -sS -o /dev/null --max-time 30 "https://$fqdn/"
 
 omlx_host=$(printf '%s' "$OMLX_URL" | sed -E 's|^https://([^/]+)/v1$|\1|')

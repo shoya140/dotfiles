@@ -11,6 +11,9 @@ dedicated to it. The account that runs OpenClaw is an administrator, and `setup`
     model can change there without touching this host. `/model local` returns to it, and it can use the
     Claude models when asked. It has no automatic fallback to Claude.
   - Both search the web with Brave and search their memory with embeddings from oMLX.
+  - Both can reply with a voice message when a reply asks for one. OpenClaw makes the audio with
+    `~/.openclaw/workspace-main/bin/luma-tts`, a command the agents keep in main's workspace, so it is part of
+    the backup; setup does not install it and only checks that it is there.
   - When a conversation nears the model's context window, OpenClaw replaces its older part with a summary. The
     local model needs minutes to read a long conversation, so a summary may take up to 30 minutes, and both
     bots say in the chat when one starts and ends.
