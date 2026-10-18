@@ -164,10 +164,11 @@ plist=$(cat <<EOF
 EOF
 )
 if [ "$(jq -S . <<<"$current")" != "$new_settings" ] || [ "$(cat "$plist_file" 2>/dev/null)" != "$plist" ]; then
-  # The server rewrites settings.json itself, so it must be stopped before the file changes
+  # The server rewrites settings.json itself, so it must be stopped before the file changes. bootout can return
+  # while launchd still waits for the server to exit, and the Server step would then skip starting it
   sudo launchctl bootout "system/$LABEL" 2>/dev/null || true
   for _ in $(seq 1 200); do
-    sudo lsof -nP -t -iTCP:"$PORT" -sTCP:LISTEN >/dev/null || break
+    sudo launchctl print "system/$LABEL" >/dev/null 2>&1 || break
     sleep 1
   done
   printf '%s\n' "$new_settings" | write_as_service 077 "$settings"
