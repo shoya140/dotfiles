@@ -2,8 +2,8 @@
 # Runs on the oMLX host as an administrator. ../setup copies it there and starts it.
 set -euo pipefail
 
-OMLX_VERSION=0.7.0
-OMLX_DMG_SHA256=2e3bb06ac6ee7f50986ba1417e909d432ccd2be471db752a4a2d3b5651e3bce0
+OMLX_VERSION=0.7.1rc1
+OMLX_DMG_SHA256=a9efb6eada12b5765de26c456342ed6bc2faefbeafae07ab4c7bcf544aaf352e
 OMLX_TEAM_ID=PSK5Q5T46L
 SERVICE_USER=omlx
 PORT=8000
