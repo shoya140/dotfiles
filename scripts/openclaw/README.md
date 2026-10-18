@@ -11,6 +11,9 @@ dedicated to it. The account that runs OpenClaw is an administrator, and `setup`
     model can change there without touching this host. `/model local` returns to it, and it can use the
     Claude models when asked. It has no automatic fallback to Claude.
   - Both search the web with Brave and search their memory with embeddings from oMLX.
+  - When a conversation nears the model's context window, OpenClaw replaces its older part with a summary. The
+    local model needs minutes to read a long conversation, so a summary may take up to 30 minutes, and both
+    bots say in the chat when one starts and ends.
 - No sandbox: both agents run commands on the host without approval, and the account has passwordless sudo.
 - OpenClaw is reachable only through Telegram DMs from the owner and through Tailscale. The gateway listens
   on 127.0.0.1 and OpenClaw publishes it to the tailnet with Tailscale Serve. Bonjour and SSH-verified node

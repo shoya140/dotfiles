@@ -52,6 +52,7 @@
       "systemAgent": { "agentId": "main" },
       "model": { "primary": "omlx/__CHAT_MODEL__" },
       "sandbox": { "mode": "off" },
+      "compaction": { "timeoutSeconds": 1800, "notifyUser": true },
       "modelPolicy": {},
       "models": {
         "anthropic/claude-fable-5-1": { "alias": "fable" },
