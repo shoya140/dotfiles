@@ -88,6 +88,12 @@ mise bootstrap packages prune --dry-run -m brew-cask   # casks that no config de
 `prune --dry-run` only lists. Without `--dry-run` it uninstalls every formula that no config declares, including
 ones installed with Homebrew itself. Casks installed with Homebrew show up as `skipped: Homebrew owns this cask`.
 
+A cask whose uninstall does more than delete its files (DeepL's `uninstall quit:` quits the app first) shows up as
+`skipped: uninstall lifecycle actions are not supported` even when mise installed it, so `prune` never removes it
+and dropping it from the config leaves it on every Mac that has it. Remove it there by hand: quit the app, then
+delete the app, `/opt/homebrew/Caskroom/<token>`, the paths in the cask's `zap` stanza (`brew cat --cask <token>`)
+and whatever else it left in `~/Library` under its name or bundle ID.
+
 `check` lists App Store apps that no config declares, and the tracked `defaults` domains that changed since the
 last snapshot, which is how a setting changed in System Settings shows up before it is declared.
 `check --accept` takes the current preferences as the snapshot (in `~/.local/state/dotfiles/snapshot/`).
