@@ -192,3 +192,7 @@ fpath=(/Users/shoya/.docker/completions $fpath)
 autoload -Uz compinit
 (( ${+_comps[docker]} )) || compinit
 # End of Docker CLI completions
+
+# eMudhra 対応: 証明書の束を Homebrew の ca-certificates に揃える
+export SSL_CERT_FILE=/opt/homebrew/etc/ca-certificates/cert.pem
+export GIT_SSL_CAINFO=/opt/homebrew/etc/ca-certificates/cert.pem
