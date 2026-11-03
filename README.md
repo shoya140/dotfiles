@@ -63,7 +63,7 @@ To replace a Mac, set up the new one with the old one's role and copy over the o
 | see the state of everything declared | `mise bootstrap status` |
 | declare packages in the repo and install them | `mise bootstrap packages use -p ~/dotfiles/<file> <package>...` (`--no-install` only declares) |
 | install packages or tools on this Mac only | `mise bootstrap packages use -g <package>...`, `mise use -g <tool>` |
-| upgrade the declared packages and tools | `mise bootstrap --update --upgrade`, then `brew upgrade --cask` for casks |
+| upgrade the declared packages and tools | `brew update && brew upgrade` (formulae and casks), then `mise bootstrap --update --upgrade` (App Store apps, tools and repos) |
 | remove a cask | drop it from the config, then `brew uninstall --cask <token>` on each Mac that has it |
 | see this Mac's role | `mise config ls` |
 
@@ -114,7 +114,7 @@ $ ~/dotfiles/check --accept         # take the new preferences as the snapshot
   `mise self-update` updates it; try a new version on one Mac before the others.
 - mise installs packages itself instead of calling `brew`, then leaves casks to Homebrew. Formulae land in
   `/opt/homebrew` with Homebrew receipts, and `homebrew_metadata` in `base/mise.toml` makes mise write a Homebrew
-  record for each cask it installs (Apple Silicon only). `brew upgrade --cask` upgrades casks and
+  record for each cask it installs (Apple Silicon only). `brew upgrade` upgrades casks with the formulae and
   `brew uninstall --cask` removes them, while `mise bootstrap --upgrade` and `prune` skip them. Taking the
   setting out does not give casks back to mise.
 - macOS defaults are compared with their type, so an integer 1 does not satisfy `true`.
