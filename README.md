@@ -63,7 +63,8 @@ To replace a Mac, set up the new one with the old one's role and copy over the o
 | see the state of everything declared | `mise bootstrap status` |
 | declare packages in the repo and install them | `mise bootstrap packages use -p ~/dotfiles/<file> <package>...` (`--no-install` only declares) |
 | install packages or tools on this Mac only | `mise bootstrap packages use -g <package>...`, `mise use -g <tool>` |
-| upgrade the declared packages and tools | `mise bootstrap --update --upgrade` |
+| upgrade the declared packages and tools | `mise bootstrap --update --upgrade`, then `brew upgrade --cask` for casks |
+| remove a cask | drop it from the config, then `brew uninstall --cask <token>` on each Mac that has it |
 | see this Mac's role | `mise config ls` |
 
 `<file>` is `base/mise.toml` or `roles/<role>/mise.toml`, and a package is `brew:<formula>`,
@@ -86,13 +87,9 @@ mise bootstrap packages prune --dry-run -m brew-cask   # casks that no config de
 ```
 
 `prune --dry-run` only lists. Without `--dry-run` it uninstalls every formula that no config declares, including
-ones installed with Homebrew itself. Casks installed with Homebrew show up as `skipped: Homebrew owns this cask`.
-
-A cask whose uninstall does more than delete its files (DeepL's `uninstall quit:` quits the app first) shows up as
-`skipped: uninstall lifecycle actions are not supported` even when mise installed it, so `prune` never removes it
-and dropping it from the config leaves it on every Mac that has it. Remove it there by hand: quit the app, then
-delete the app, `/opt/homebrew/Caskroom/<token>`, the paths in the cask's `zap` stanza (`brew cat --cask <token>`)
-and whatever else it left in `~/Library` under its name or bundle ID.
+ones installed with Homebrew itself. Every cask belongs to Homebrew (see Notes), so casks show up as
+`skipped: Homebrew owns this cask` and `prune` never removes one. Remove a cask with
+`brew uninstall --cask <token>`, adding `--zap` to also delete what it left in `~/Library`.
 
 `check` lists App Store apps that no config declares, and the tracked `defaults` domains that changed since the
 last snapshot, which is how a setting changed in System Settings shows up before it is declared.
@@ -113,11 +110,13 @@ $ ~/dotfiles/check --accept         # take the new preferences as the snapshot
 
 - A mistake in any of these files stops mise on every Mac that loads it. Run `mise bootstrap --dry-run` before
   committing.
-- The files need mise 2026.10.11 or later (`min_version` in `base/mise.toml`), the version `setup` installs.
+- The files need mise 2026.10.25 or later (`min_version` in `base/mise.toml`), the version `setup` installs.
   `mise self-update` updates it; try a new version on one Mac before the others.
-- mise installs packages itself instead of calling `brew`. Formulae land in `/opt/homebrew` with Homebrew
-  receipts, so `brew` manages them too, but casks installed by mise are upgraded by mise
-  (`mise bootstrap --upgrade`). Homebrew stays for trying things and for the rare cask mise cannot install.
+- mise installs packages itself instead of calling `brew`, then leaves casks to Homebrew. Formulae land in
+  `/opt/homebrew` with Homebrew receipts, and `homebrew_metadata` in `base/mise.toml` makes mise write a Homebrew
+  record for each cask it installs (Apple Silicon only). `brew upgrade --cask` upgrades casks and
+  `brew uninstall --cask` removes them, while `mise bootstrap --upgrade` and `prune` skip them. Taking the
+  setting out does not give casks back to mise.
 - macOS defaults are compared with their type, so an integer 1 does not satisfy `true`.
   `base/scripts/defaults-hook.sh` restarts Dock, Finder and the menu bar only when a run changed their
   preferences. Some settings need a logout or restart.

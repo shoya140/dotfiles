@@ -4,7 +4,7 @@
 set -euo pipefail
 
 REPO_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
-MISE_VERSION=v2026.10.11
+MISE_VERSION=v2026.10.25
 CONF_D="$HOME/.config/mise/conf.d"
 
 role="${1:-}"

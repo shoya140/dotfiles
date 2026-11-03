@@ -1,4 +1,8 @@
-min_version = "2026.10.11"
+min_version = "2026.10.25"
+
+# mise hands each cask it installs to Homebrew, so brew upgrades and removes every cask alike.
+[bootstrap.brew]
+homebrew_metadata = true
 
 [bootstrap.packages]
 "brew:coreutils" = "latest"

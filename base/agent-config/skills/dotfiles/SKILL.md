@@ -16,7 +16,7 @@ Steps:
 1. Run these and report the drift grouped by kind:
    - `git -C ~/dotfiles fetch` and `git -C ~/dotfiles status -sb`: uncommitted, unpushed, or behind origin
    - `mise bootstrap --dry-run`: what the repo declares but this machine does not have yet
-   - `mise bootstrap packages prune --dry-run` and `mise bootstrap packages prune --dry-run -m brew-cask`: formulae and casks that no config declares (casks installed with Homebrew appear as "skipped: Homebrew owns this cask")
+   - `mise bootstrap packages prune --dry-run` and `mise bootstrap packages prune --dry-run -m brew-cask`: formulae and casks that no config declares (every cask belongs to Homebrew, so casks appear as "skipped: Homebrew owns this cask" and are removed with `brew uninstall --cask <token>`, which the user runs)
    - `~/dotfiles/check`: App Store apps not declared and System Settings changes since the last snapshot
 2. For each item, ask the user whether to declare it in the repo, apply the repo to the machine, or remove it from the machine. Suggest a choice when it is obvious, such as a newly installed app.
 3. To declare a package, choose where it belongs and say why: `base/mise.toml` (every Mac), `roles/gui/mise.toml` (every gui Mac; all GUI apps and development tools go here), `roles/cui/mise.toml` (every cui Mac), or this machine only. Run `mise bootstrap packages use --no-install -p ~/dotfiles/<file> <manager>:<name>`, or `mise bootstrap packages use --no-install -g <manager>:<name>` for this machine only, with brew:<formula>, brew-cask:<token> or mas:<id>, and add the app name as a trailing comment on a mas line.
