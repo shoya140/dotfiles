@@ -11,7 +11,6 @@ python = "3.14.7"
 [bootstrap.packages]
 "brew:ffmpeg" = "latest"
 "brew:firebase-cli" = "latest"
-"brew:herdr" = "latest"
 "brew:imagemagick" = "latest"
 "brew:mas" = "latest"
 "brew:postgresql@18" = "latest"
@@ -74,14 +73,6 @@ python = "3.14.7"
 "mas:1450874784" = "latest" # Transporter
 "mas:1607635845" = "latest" # Velja
 "mas:775737590" = "latest" # iA Writer
-
-# herdr's Claude Code integration and plugins live outside its package
-[bootstrap.hooks]
-post-packages = '''
-command -v herdr >/dev/null 2>&1 || exit 0
-[ -f "$HOME/.claude/hooks/herdr-agent-state.sh" ] || herdr integration install claude
-herdr plugin list 2>/dev/null | grep -q shibayu36.equalize-panes || herdr plugin install shibayu36/herdr-equalize-panes -y
-'''
 
 [bootstrap.macos.defaults.NSGlobalDomain]
 # Trackpad tracking speed

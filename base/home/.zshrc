@@ -46,7 +46,6 @@ alias ll="ls -a -l"
 alias ls="gls --color"
 alias x="/usr/local/bin/zsh"
 alias cot="open $1 -a /Applications/CotEditor.app"
-alias hr="herdr"
 
 case ${OSTYPE} in
     darwin*)
