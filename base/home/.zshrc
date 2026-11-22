@@ -177,6 +177,11 @@ export PATH="$BREW_ROOT/opt/postgresql@18/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 eval "$(mise activate zsh)"
 
+# Rex のシェルは launchd の扱いを引き継いで Dropbox のオンラインのみのファイルを取りにいけないので、claude は取りにいけるようにして起動する
+claude() {
+  /usr/bin/python3 -I -c 'import ctypes, os, sys; ctypes.CDLL(None).setiopolicy_np(3, 0, 2); os.execvp("claude", ["claude", *sys.argv[1:]])' "$@"
+}
+
 alias claude-affectify='CLAUDE_CONFIG_DIR=~/.claude-affectify claude'
 alias claude-xirg='CLAUDE_CONFIG_DIR=~/.claude-xirg claude'
 alias claude-api='CLAUDE_CONFIG_DIR=~/.claude-api claude'
